@@ -1,0 +1,7 @@
+switch: cosmos-fms-switch
+enable-secret: cosmos-fms
+enable-password: cosmos-fms-password
+virtual-terminal-password: cosmos-fms-password
+web-username: admin
+web-password: cisco
+ip: 192.168.1.137

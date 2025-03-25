@@ -1,0 +1,60 @@
+! Switch config for Cosmos FMS system on a Cisco WS-C3850-48PW-S switch
+! Ports:
+!   1-2: Red 1 driverstation
+!   3-4: Red 2 driverstation
+!   5-6: Red 3 driverstation
+!   7-8: Blue 1 driverstation
+!   9-10: Blue 2 driverstation
+!   11-12: Blue 3 driverstation
+!   13: Field AP
+!   15: FMS server
+!   17-20: PLCs
+!   21-24: Other FMS-related devices
+!   25-36: General internet (venue internet)
+!   37-46: Unused (disabled)
+!   47: Venue internet uplink
+!   48: Management port (SSH)
+!
+! VLANs:
+!   1: Management
+!   10: Red 1
+!   20: Red 2
+!   30: Red 3
+!   40: Blue 1
+!   50: Blue 2
+!   60: Blue 3
+!   100: Field network
+!   200: Venue internet
+!
+!
+! VLAN configuration
+vlan 1
+ name Management
+vlan 10
+ name Red1
+vlan 20
+ name Red2
+vlan 30
+ name Red3
+vlan 40
+ name Blue1
+vlan 50
+ name Blue2
+vlan 60
+ name Blue3
+vlan 100
+ name FMS_Network
+vlan 200
+ name Venue_Internet
+exit
+!
+!
+! Interface configuration
+!
+! Management interface
+interface vlan 1
+ ip address 10.0.100.2 255.255.255.0
+ no shutdown
+exit
+!
+! 

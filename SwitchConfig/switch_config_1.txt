@@ -1,0 +1,192 @@
+! Reset the config (optional if needed)
+! write erase
+! reload
+!
+! --------------------
+! VLAN CONFIGURATION
+! --------------------
+vlan 1
+ name Management
+vlan 10
+ name Red1
+vlan 20
+ name Red2
+vlan 30
+ name Red3
+vlan 40
+ name Blue1
+vlan 50
+ name Blue2
+vlan 60
+ name Blue3
+vlan 100
+ name FMS_Control
+vlan 200
+ name Venue_Uplink
+exit
+
+! --------------------
+! INTERFACE CONFIGURATION
+! --------------------
+
+! Management Interface (VLAN 1) - SSH Access
+interface vlan 1
+ ip address 10.0.100.2 255.255.255.0
+ no shutdown
+exit
+
+! FMS VLAN (VLAN 100) - Allows communication with DS
+interface vlan 100
+ ip address 192.168.100.1 255.255.255.0
+ no shutdown
+exit
+
+! Venue Internet Uplink (VLAN 200)
+interface vlan 200
+ ip address dhcp
+ no shutdown
+exit
+
+! DS VLANs with IPs for Routing
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+exit
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+exit
+interface vlan 30
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+exit
+interface vlan 40
+ ip address 192.168.40.1 255.255.255.0
+ no shutdown
+exit
+interface vlan 50
+ ip address 192.168.50.1 255.255.255.0
+ no shutdown
+exit
+interface vlan 60
+ ip address 192.168.60.1 255.255.255.0
+ no shutdown
+exit
+
+! --------------------
+! PORT CONFIGURATION
+! --------------------
+
+! Driver Station Ports
+interface gigabitEthernet 1/1
+ switchport mode access
+ switchport access vlan 10
+exit
+interface gigabitEthernet 1/2
+ switchport mode access
+ switchport access vlan 20
+exit
+interface gigabitEthernet 1/3
+ switchport mode access
+ switchport access vlan 30
+exit
+interface gigabitEthernet 1/4
+ switchport mode access
+ switchport access vlan 40
+exit
+interface gigabitEthernet 1/5
+ switchport mode access
+ switchport access vlan 50
+exit
+interface gigabitEthernet 1/6
+ switchport mode access
+ switchport access vlan 60
+exit
+
+! FMS Server Port
+interface gigabitEthernet 1/7
+ switchport mode access
+ switchport access vlan 100
+exit
+
+! Field AP (Trunk - VLANs for robots & FMS)
+interface gigabitEthernet 1/8
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50,60,100
+exit
+
+! PLC Ports
+interface range gigabitEthernet 1/9-12
+ switchport mode access
+ switchport access vlan 100
+exit
+
+! Other FMS-Related Devices
+interface range gigabitEthernet 1/13-16
+ switchport mode access
+ switchport access vlan 100
+exit
+
+! Management Port (for SSH, VLAN 1)
+interface gigabitEthernet 1/48
+ switchport mode access
+ switchport access vlan 1
+exit
+
+! Venue Internet Uplink (Port 47)
+interface gigabitEthernet 1/47
+ switchport mode access
+ switchport access vlan 200
+exit
+
+! --------------------
+! ROUTING & INTERNET ACCESS
+! --------------------
+
+! Default route (Send all unknown traffic to venue's internet)
+ip route 0.0.0.0 0.0.0.0 dhcp
+
+! ACL to block robots from the internet
+ip access-list extended BLOCK_ROBOT_INTERNET
+ deny ip 192.168.10.0 0.0.0.255 any
+ deny ip 192.168.20.0 0.0.0.255 any
+ deny ip 192.168.30.0 0.0.0.255 any
+ deny ip 192.168.40.0 0.0.0.255 any
+ deny ip 192.168.50.0 0.0.0.255 any
+ deny ip 192.168.60.0 0.0.0.255 any
+ permit ip any any
+exit
+
+! Apply ACL to uplink port to block robot internet access
+interface gigabitEthernet 1/47
+ ip access-group BLOCK_ROBOT_INTERNET in
+exit
+
+! --------------------
+! SSH CONFIGURATION
+! --------------------
+ip domain-name fms.local
+crypto key generate rsa modulus 2048
+ip ssh version 2
+
+! Create a user (Change "admin" and "yourpassword" as needed)
+username admin privilege 15 secret yourpassword
+
+! Enable SSH and set it to allow only the admin user
+line vty 0 4
+ transport input ssh
+ login local
+exit
+
+! --------------------
+! FINAL SETTINGS
+! --------------------
+
+! Enable IP routing so the switch can act as a Layer 3 router
+ip routing
+
+! Enable Spanning Tree (to prevent loops)
+spanning-tree mode rapid-pvst
+
+! Save configuration
+write memory
