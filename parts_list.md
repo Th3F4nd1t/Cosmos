@@ -7,13 +7,12 @@ Wall rack
 - VH-113 AP
 - POE 5ghz AP
 
-PLC stuff
+Relay box stuff
 - 7 E-stops
 - 6 A-stops
-- 3 PLCs
-- 6 Amber E/A Stop light 
-- 5 Green safe lights
-- 5 Red field enabled lights
+- 3 Orange Pis
+- 6 Jesus Panels
+- 3 5v power supplies (300w)
 - Bulkheads TBD
 
 Cables
@@ -30,9 +29,7 @@ To Aquire
 - 500ft Cat 5e
 - 13 E stop buttons
 - 3 PLCs
-- 6 Amber lights
-- 5 Green lights
-- 5 Red lights
+- 6 Jesus Panels
 - VH-113 AP
 - Locking wall case
 - 8 Port surge protector
