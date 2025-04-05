@@ -7,11 +7,13 @@
 !   9-10: Blue 2 driverstation
 !   11-12: Blue 3 driverstation
 !   13: Field AP
+!   14: Field WiFi AP
 !   15: FMS server
 !   17-20: PLCs
 !   21-24: Other FMS-related devices
 !   25-36: General internet (venue internet)
-!   37-46: Unused (disabled)
+!   37-40: POE Camera Ports
+!   41-46: Unused (disabled)
 !   47: Venue internet uplink
 !   48: Management port (SSH)
 !
@@ -27,7 +29,7 @@
 !   200: Venue internet
 !
 !
-! VLAN configuration
+! VLAN Configuration
 vlan 1
  name Management
 vlan 10
@@ -48,13 +50,196 @@ vlan 200
  name Venue_Internet
 exit
 !
+! Assigning Access Ports
+interface range gigabitEthernet 1/1-2
+ switchport mode access
+ switchport access vlan 10
+ exit
 !
-! Interface configuration
+interface range gigabitEthernet 1/0/3-4
+ switchport mode access
+ switchport access vlan 20
+ exit
 !
-! Management interface
+interface range gigabitEthernet 1/5-6
+ switchport mode access
+ switchport access vlan 30
+ exit
+
+interface range gigabitEthernet 1/7-8
+ switchport mode access
+ switchport access vlan 40
+ exit
+
+interface range gigabitEthernet 1/9-10
+ switchport mode access
+ switchport access vlan 50
+ exit
+
+interface range gigabitEthernet 1/11-12
+ switchport mode access
+ switchport access vlan 60
+ exit
+
+interface gigabitEthernet 1/13
+ switchport mode access
+ switchport access vlan 100
+ exit
+
+interface gigabitEthernet 1/14
+ switchport mode access
+ switchport access vlan 100
+ exit
+
+interface gigabitEthernet 1/15
+ switchport mode access
+ switchport access vlan 100
+ exit
+
+interface range gigabitEthernet 1/17-20
+ switchport mode access
+ switchport access vlan 100
+ exit
+
+interface range gigabitEthernet 1/25-36
+ switchport mode access
+ switchport access vlan 200
+ exit
+
+interface gigabitEthernet 1/47
+ switchport mode access
+ switchport access vlan 200
+ exit
+
+! FMS AP Trunk Port Configuration (VLANs 10, 20, 30, 40, 50, 60, 100)
+interface gigabitEthernet 1/13
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50,60,100
+ exit
+
+! FMS Server Trunk Port Configuration (VLANs 10, 20, 30, 40, 50, 60, 100)
+interface gigabitEthernet 1/15
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50,60,100
+ exit
+
+! POE Camera Ports on VLAN 100 (FMS Network)
+interface range gigabitEthernet 1/37-40
+ switchport mode access
+ switchport access vlan 100
+ exit
+
+! Management Port Configuration
+interface gigabitEthernet 1/48
+ switchport mode access
+ switchport access vlan 1
+ exit
+
+! Set up SSH and Domain Name
+ip domain-name cosmos-fms.local
+crypto key generate rsa usage-keys label ssh-key modulus 2048
+ip ssh version 2
+username admin privilege 15 secret yourSecretPassword
+line vty 0 4
+ login local
+ transport input ssh
+ exit
+
+! Routing Configuration for Inter-VLAN Routing (SVIs)
 interface vlan 1
- ip address 10.0.100.2 255.255.255.0
+ ip address 192.168.1.1 255.255.255.0
  no shutdown
-exit
-!
-! 
+ exit
+
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+ exit
+
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+ exit
+
+interface vlan 30
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+ exit
+
+interface vlan 40
+ ip address 192.168.40.1 255.255.255.0
+ no shutdown
+ exit
+
+interface vlan 50
+ ip address 192.168.50.1 255.255.255.0
+ no shutdown
+ exit
+
+interface vlan 60
+ ip address 192.168.60.1 255.255.255.0
+ no shutdown
+ exit
+
+interface vlan 100
+ ip address 192.168.100.1 255.255.255.0
+ no shutdown
+ exit
+
+! Enable Routing on the Switch (Layer 3 Mode)
+ip routing
+
+! DHCP Configuration for Each VLAN
+ip dhcp excluded-address 192.168.1.1 192.168.1.10
+ip dhcp excluded-address 192.168.10.1 192.168.10.10
+ip dhcp excluded-address 192.168.20.1 192.168.20.10
+ip dhcp excluded-address 192.168.30.1 192.168.30.10
+ip dhcp excluded-address 192.168.40.1 192.168.40.10
+ip dhcp excluded-address 192.168.50.1 192.168.50.10
+ip dhcp excluded-address 192.168.60.1 192.168.60.10
+ip dhcp excluded-address 192.168.100.1 192.168.100.10
+
+ip dhcp pool Red1
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 8.8.8.8
+ exit
+
+ip dhcp pool Red2
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+ dns-server 8.8.8.8
+ exit
+
+ip dhcp pool Red3
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.1
+ dns-server 8.8.8.8
+ exit
+
+ip dhcp pool Blue1
+ network 192.168.40.0 255.255.255.0
+ default-router 192.168.40.1
+ dns-server 8.8.8.8
+ exit
+
+ip dhcp pool Blue2
+ network 192.168.50.0 255.255.255.0
+ default-router 192.168.50.1
+ dns-server 8.8.8.8
+ exit
+
+ip dhcp pool Blue3
+ network 192.168.60.0 255.255.255.0
+ default-router 192.168.60.1
+ dns-server 8.8.8.8
+ exit
+
+ip dhcp pool FMSNetwork
+ network 192.168.100.0 255.255.255.0
+ default-router 192.168.100.1
+ dns-server 8.8.8.8
+ exit
+
+! Enable Routing Between VLANs
+ip routing

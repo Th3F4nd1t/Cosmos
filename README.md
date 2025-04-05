@@ -23,4 +23,9 @@ Cheesy Arena will be very helpful to figuring out the network side of how the fm
 Also the FMS doesn't talk to robots, instead it only talks to the DS, which then talks to the robot.
 If the DS loses connection to the FMS, it will shut down the robot (hopefully)
 
-Parts to make (Software):
+To-Do:
+- Talk to DS
+    - Establish connection to DS
+    - 
+- Talk to Field AP
+- Talk to PLCs
