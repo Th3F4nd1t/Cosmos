@@ -1,6 +1,10 @@
 import datetime
 from enum import Enum
+from scapy.all import Ether, Dot1Q, IP, UDP, sendp
+
 from ds import DriverStation, AllianceStation
+
+# https://frcture.readthedocs.io/en/latest/driverstation/fms_to_ds.html
 
 class ArenaMode(Enum):
     TEST = 0
@@ -49,12 +53,12 @@ class Arena:
         reset = "\033[0m"
         print(f"{levels.get(level, reset)}[{level}] {reset}{message}")
 
-    def send_udp(self, station: AllianceStation):
+    def send_udp(self, station: AllianceStation, tags: list = None):
         packet = bytearray(22)
 
         # Packet number, stored big-endian
-        packet[0] = bytes([self.driverstations["object"][station].team_number])[1]
-        packet[1] = bytes([self.driverstations["object"][station].team_number])[0]
+        packet[0] = bytes([self.driverstations["object"][station].packet_number])[1]
+        packet[1] = bytes([self.driverstations["object"][station].packet_number])[0]
 
         # Comm version
         packet[2] = 0x00
@@ -109,6 +113,36 @@ class Arena:
         packet[19] = (now.year - 1900).to_bytes(1, byteorder="big")[0]
 
         # Remaining time
+        if self.field["mode"] == ArenaMode.TEST:
+            packet[20] = 0x00
+            packet[21] = 0x00
+        elif self.field["mode"] == ArenaMode.PRACTICE_MATCH:
+            packet[20] = 0x00
+            packet[21] = 0x00
+        elif self.field["mode"] == ArenaMode.QUAL_MATCH:
+            packet[20] = 0x00
+            packet[21] = 0x00
+        elif self.field["mode"] == ArenaMode.PLAYOFF_MATCH:
+            packet[20] = 0x00
+            packet[21] = 0x00
+        elif self.field["mode"] == ArenaMode.DEVELOPMENT:
+            packet[20] = 0x00
+            packet[21] = 0x00
+        elif self.field["mode"] == ArenaMode.NO_FMS:
+            packet[20] = 0x00
+            packet[21] = 0x00
+        else:
+            packet[20] = 0x00
+            packet[21] = 0x00
+            self.log("Unknown arena mode", "ERROR")
 
+        # Increment packet number
+        self.driverstations["object"][station].packet_number += 1
+
+        if self.driverstations["object"][station].packet_number > 0xFFFF:
+            self.driverstations["object"][station].packet_number = 0x0000
+            self.log("Packet number overflow", "WARNING")
+
+        # Send packet to DS
 
 

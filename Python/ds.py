@@ -46,4 +46,4 @@ class DriverStation:
 
     def set_team_num(self, team_number: int):
         self.team_number = team_number
-        self.ip = f"10.{self.team_number // 100}.{self.team_number % 100}.5"      
+        self.ip = f"10.{self.team_number // 100}.{self.team_number % 100}.5"
