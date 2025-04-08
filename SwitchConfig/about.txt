@@ -5,3 +5,26 @@ virtual-terminal-password: cosmos-fms-password
 web-username: admin
 web-password: cisco
 ip: 192.168.1.137
+
+Port layout:
+1: Red Switch (VLANs 1, 10, 20, 30, 100)
+2: Red Switch (VLANs 1, 10, 20, 30, 100)
+3: Blue Switch (VLANs 1, 40, 50, 60, 100)
+4: Blue Switch (VLANs 1, 40, 50, 60, 100)
+
+13: Field AP (VLANs 1, 10, 20, 30, 40, 50, 60, 100)
+14: Field AP (VLANs 1, 10, 20, 30, 40, 50, 60, 100)
+15: Field WiFi (VLANs 1, 100)
+
+17: FMS (VLANs, 10, 20, 30, 40, 50, 60, 100, 200)
+18: FMS (VLANs, 10, 20, 30, 40, 50, 60, 100, 200)
+
+19: Center PLC (VLAN 100)
+
+25: General internet
+26: General internet
+27: General internet
+28: General internet
+
+47: Venue internet (VLAN 200)
+48: Management (VLAN 1)

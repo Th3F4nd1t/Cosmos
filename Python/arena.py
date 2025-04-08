@@ -19,8 +19,8 @@ class Arena:
     def __init__(self):
         self.driverstations = {
             "object" : [
-                DriverStation(None, AllianceStation.RED1),
-                DriverStation(None, AllianceStation.RED2),
+                DriverStation(3767, AllianceStation.RED1),
+                DriverStation(6, AllianceStation.RED2),
                 DriverStation(None, AllianceStation.RED3),
                 DriverStation(None, AllianceStation.BLUE1),
                 DriverStation(None, AllianceStation.BLUE2),
@@ -53,11 +53,19 @@ class Arena:
         reset = "\033[0m"
         print(f"{levels.get(level, reset)}[{level}] {reset}{message}")
 
+    def loop(self):
+        # Get from PLCs
+        # Get from API
+        # Update field state
+        # Send to DS
+        # Send to PLCs        
+        ...
+
     def send_udp(self, station: AllianceStation, tags: list = None):
         packet = bytearray(22)
 
         # Packet number, stored big-endian
-        packet[0] = bytes([self.driverstations["object"][station].packet_number])[1]
+        packet[0] = bytes([self.driverstations["object"][station].packet_number])[1] if self.driverstations["object"][station].packet_number > 0xFF else 0x00
         packet[1] = bytes([self.driverstations["object"][station].packet_number])[0]
 
         # Comm version
@@ -94,7 +102,7 @@ class Arena:
             self.log("Unknown arena mode", "ERROR")
             
         # Match number
-        packet[7] = bytes([self.field["match_number"]])[1]
+        packet[7] = bytes([self.field["match_number"]])[1] if self.field["match_number"] > 0xFF else 0x00
         packet[8] = bytes([self.field["match_number"]])[0]
         packet[9] = 0x01 # Repeat number
 
@@ -113,28 +121,8 @@ class Arena:
         packet[19] = (now.year - 1900).to_bytes(1, byteorder="big")[0]
 
         # Remaining time
-        if self.field["mode"] == ArenaMode.TEST:
-            packet[20] = 0x00
-            packet[21] = 0x00
-        elif self.field["mode"] == ArenaMode.PRACTICE_MATCH:
-            packet[20] = 0x00
-            packet[21] = 0x00
-        elif self.field["mode"] == ArenaMode.QUAL_MATCH:
-            packet[20] = 0x00
-            packet[21] = 0x00
-        elif self.field["mode"] == ArenaMode.PLAYOFF_MATCH:
-            packet[20] = 0x00
-            packet[21] = 0x00
-        elif self.field["mode"] == ArenaMode.DEVELOPMENT:
-            packet[20] = 0x00
-            packet[21] = 0x00
-        elif self.field["mode"] == ArenaMode.NO_FMS:
-            packet[20] = 0x00
-            packet[21] = 0x00
-        else:
-            packet[20] = 0x00
-            packet[21] = 0x00
-            self.log("Unknown arena mode", "ERROR")
+        packet[20] = bytes([self.field["time_left"]])[1] if self.field["time_left"] > 0xFF else 0x00
+        packet[21] = bytes([self.field["time_left"]])[0]
 
         # Increment packet number
         self.driverstations["object"][station].packet_number += 1
@@ -144,5 +132,15 @@ class Arena:
             self.log("Packet number overflow", "WARNING")
 
         # Send packet to DS
+        self.log(f"Sending packet to {station} ({self.driverstations['object'][station].ip})", "DEBUG")
+        for byte in packet:
+            self.log(f"{byte:08b}", "DEBUG")
+        self.log(f"Packet length: {len(packet)}", "DEBUG")
+        
 
-
+if __name__ == "__main__":
+    arena = Arena()
+    arena.log("Arena started", "INFO")
+    arena.log("Sending packet to RED1", "INFO")
+    while True:
+        arena.send_udp(AllianceStation.RED1)

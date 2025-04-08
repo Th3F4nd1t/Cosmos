@@ -43,6 +43,11 @@ class DriverStation:
         self.station_number = station_number
         self.ip =  ip if ip != None else f"10.{self.team_number // 100}.{self.team_number % 100}.5"
         self.vlan = vlan if vlan != None else (station_number + 1) * 10
+        self.packet_number = 0
+        self.isEstop = False
+        self.isAstop = False
+        self.isEnabled = False
+        self.mode = 0
 
     def set_team_num(self, team_number: int):
         self.team_number = team_number

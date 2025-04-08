@@ -1,0 +1,4 @@
+- Field state (somehow needs to literally contain everything and needs to be accessible from the outside for API)
+- Internet sender (everything goes thru it)
+- Internet receiver (everything comes thru it)
+- AP Management
