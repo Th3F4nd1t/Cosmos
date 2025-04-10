@@ -1,5 +1,6 @@
 import datetime
 from enum import Enum
+import threading
 import time
 from scapy.all import Ether, Dot1Q, IP, UDP, sendp
 import socket
@@ -45,6 +46,8 @@ class Arena:
             "time_left" : 4,
         }
 
+        self.running = True
+
     def log(self, message: str, level: str = "INFO"):
         levels = {
             "INFO": "\033[94m",
@@ -56,18 +59,23 @@ class Arena:
         print(f"{levels.get(level, reset)}[{level}] {reset}{message}")
 
     def run(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.log("Socket created", "INFO")
-        try:
-            while True:
-                self.send_udp(sock, AllianceStation.RED1)
-                self.log("Packet sent", "DEBUG")
-                time.sleep(0.5)  # Sleep for 500ms between packets
-        except Exception as e:
-            self.log(f"Error sending UDP packet: {e}", "ERROR") 
-        finally:
-            sock.close()
-            self.log("Socket closed", "INFO")
+        def loop():
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.log("Socket created", "INFO")
+            try:
+                while self.running:
+                    self.send_udp(sock, "AllianceStation.RED1")  # Replace with your enum
+                    self.log("Packet sent", "DEBUG")
+                    time.sleep(0.5)
+            except Exception as e:
+                self.log(f"Error sending UDP packet: {e}", "ERROR")
+            finally:
+                sock.close()
+                self.log("Socket closed", "INFO")
+
+        thread = threading.Thread(target=loop, daemon=True)
+        thread.start()
+        self.log("UDP thread started", "INFO")
 
 
     def send_udp(self, sock, station: AllianceStation, tags: list = None):
@@ -153,4 +161,35 @@ if __name__ == "__main__":
     arena = Arena()
     arena.log("Arena started", "INFO")
     arena.run()
+    while True:
+        cmd = input(">>> ")
+        if cmd == "stop":
+            arena.running = False
+            break
+        elif cmd == "setds":
+            ds = input("Enter DS number (1-6): ")
+            if ds == 1:
+                arena.driverstations["object"][0].alliance_station = AllianceStation.RED1
+            elif ds == 2:
+                arena.driverstations["object"][0].alliance_station = AllianceStation.RED2
+            elif ds == 3:
+                arena.driverstations["object"][0].alliance_station = AllianceStation.RED3
+            elif ds == 4:
+                arena.driverstations["object"][0].alliance_station = AllianceStation.BLUE1
+            elif ds == 5:
+                arena.driverstations["object"][0].alliance_station = AllianceStation.BLUE2
+            elif ds == 6:
+                arena.driverstations["object"][0].alliance_station = AllianceStation.BLUE3
+
+        elif cmd == "enable" or cmd == "e":
+            ds = input("Enter DS number (1-6): ")
+            arena.driverstations["object"][0].isEnabled = True
+
+        elif cmd == "disable" or cmd == "d":
+            arena.driverstations["object"][0].isEnabled = False
+
+        else:
+            print("Unknown command: E-Stopping")
+            arena.driverstations["object"][0].isEnabled = False
+
     
