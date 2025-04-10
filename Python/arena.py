@@ -1,6 +1,8 @@
 import datetime
 from enum import Enum
+import time
 from scapy.all import Ether, Dot1Q, IP, UDP, sendp
+import socket
 
 from ds import DriverStation, AllianceStation
 
@@ -40,7 +42,7 @@ class Arena:
         self.field = {
             "mode" : ArenaMode.TEST,
             "match_number" : 1,
-            "time_left" : 0,
+            "time_left" : 4,
         }
 
     def log(self, message: str, level: str = "INFO"):
@@ -53,20 +55,27 @@ class Arena:
         reset = "\033[0m"
         print(f"{levels.get(level, reset)}[{level}] {reset}{message}")
 
-    def loop(self):
-        # Get from PLCs
-        # Get from API
-        # Update field state
-        # Send to DS
-        # Send to PLCs        
-        ...
+    def run(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.log("Socket created", "INFO")
+        try:
+            while True:
+                self.send_udp(sock, AllianceStation.RED1)
+                self.log("Packet sent", "DEBUG")
+                time.sleep(0.5)  # Sleep for 500ms between packets
+        except Exception as e:
+            self.log(f"Error sending UDP packet: {e}", "ERROR") 
+        finally:
+            sock.close()
+            self.log("Socket closed", "INFO")
 
-    def send_udp(self, station: AllianceStation, tags: list = None):
+
+    def send_udp(self, sock, station: AllianceStation, tags: list = None):
         packet = bytearray(22)
 
-        # Packet number, stored big-endian
-        packet[0] = bytes([self.driverstations["object"][station].packet_number])[1] if self.driverstations["object"][station].packet_number > 0xFF else 0x00
-        packet[1] = bytes([self.driverstations["object"][station].packet_number])[0]
+        packet_number = self.driverstations["object"][station].packet_number
+        packet[0] = (packet_number >> 8) & 0xFF  # High byte
+        packet[1] = packet_number & 0xFF         # Low byte
 
         # Comm version
         packet[2] = 0x00
@@ -132,15 +141,16 @@ class Arena:
             self.log("Packet number overflow", "WARNING")
 
         # Send packet to DS
-        self.log(f"Sending packet to {station} ({self.driverstations['object'][station].ip})", "DEBUG")
-        for byte in packet:
-            self.log(f"{byte:08b}", "DEBUG")
-        self.log(f"Packet length: {len(packet)}", "DEBUG")
+        # self.log(f"Sending packet to {station} ({self.driverstations['object'][station].ip})", "DEBUG")
+        # for byte in packet:
+        #     self.log(f"{byte:08b}", "DEBUG")
+        # self.log(f"Packet length: {len(packet)}", "DEBUG")
+
+        sock.sendto(packet, ("192.168.69.193", 1120))
         
 
 if __name__ == "__main__":
     arena = Arena()
     arena.log("Arena started", "INFO")
-    arena.log("Sending packet to RED1", "INFO")
-    while True:
-        arena.send_udp(AllianceStation.RED1)
+    arena.run()
+    

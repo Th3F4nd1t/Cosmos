@@ -29,3 +29,13 @@ To-Do:
     - 
 - Talk to Field AP
 - Talk to PLCs
+
+
+# States
+## Searching
+### To enter:
+- Not all static FMS devices are conencted (Field AP, PLCs, NOT DS)
+### It will:
+- Search for static FMS devices (Field AP, PLCs)
+### To exit:
+- All static FMS devices are connected (Field AP, PLCs, NOT DS)
