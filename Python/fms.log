@@ -1,0 +1,384 @@
+[IMPORTANT] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Entering main loop
+[IMPORTANT] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Entering main loop
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[INFO] Starting match
+[INFO] Starting match
+[INFO] Starting match
+[INFO] Starting match
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[INFO] Starting match
+[INFO] Starting match
+[INFO] Starting match
+[ERROR] Driver station RED1 not found. Has the FMS been started?
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[INFO] Stopping FMS
+[INFO] Stopping FMS
+[INFO] Command: [<__main__.FMS object at 0x000001327E4DF620>, ['this', 'that', 'those']]
+[INFO] Populating <__main__.FMS object at 0x00000209E3637620> matches per team for teams in []
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[INFO] FMS started
+[INFO] Populating <__main__.FMS object at 0x00000257DEE97620> matches per team for teams in ['3', 'teams.txt']
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[INFO] FMS started
+[INFO] Populating 3 matches per team for teams in teams.txt
+[INFO] Populating 6 matches per team for teams in teams.txt
+[ERROR] FMS crashed. Restarting...
+[INFO] Stopping FMS
+[WARNING] FMS not started. Cannot stop no threads.
+[DEBUG] Thread handler destroyed
+[INFO] Stopping FMS
+[WARNING] FMS not started. Cannot stop no threads.
+[DEBUG] Thread handler destroyed
+[INFO] Populating 12 matches per team for teams in teams.txt
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Please report this to the developers and include your fms.log file.
+[ERROR] Restarting FMS in 5 seconds...
+[INFO] Stopping FMS
+[WARNING] FMS not started. Cannot stop no threads.
+[DEBUG] Thread handler destroyed
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMS' object has no attribute 'status_fms'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMS' object has no attribute 'status_fms'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMS' object has no attribute 'status_fms'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMS' object has no attribute 'debug_thread_start'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMS' object has no attribute 'debug_thread_start'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[INFO] Active threads:
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'NoneType' object has no attribute 'threads'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[WARNING] Thread handler not running
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[INFO] Control pin set to 1234
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Stopped
+[INFO] Thread ds_red_2: Stopped
+[INFO] Thread ds_red_3: Stopped
+[INFO] Thread ds_blue_1: Stopped
+[INFO] Thread ds_blue_2: Stopped
+[INFO] Thread ds_blue_3: Stopped
+[INFO] Thread control: Stopped
+[INFO] Thread event_handler: Stopped
+[INFO] Thread api: Stopped
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[DEBUG] Thread handler destroyed
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[DEBUG] Thread handler destroyed
+[DEBUG] Logger destroyed
+[INFO] FMS stopped
+[INFO] Stopping FMS
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMS' object has no attribute 'thread_handler'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: name 'breakc' is not defined
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: name 'breakc' is not defined
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: int() argument must be a string, a bytes-like object or a real number, not 'CommandContext'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 2246
+[INFO] FMS started
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Reloading all threads
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'NoneType' object has no attribute 'stop_all_threads'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Reloading all threads
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'NoneType' object has no attribute 'stop_all_threads'
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[WARNING] Log level not specified
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: list index out of range
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 428, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 151, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    cmd(args)  # Run the function
+    ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 368, in log_level
+    level = cmd[1].upper()
+            ~~~^^^
+IndexError: list index out of range
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Reloading all threads
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'NoneType' object has no attribute 'stop_all_threads'
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 428, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 151, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    cmd(args)  # Run the function
+    ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 236, in reload_fms
+    self.thread_handler.stop_all_threads()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stop_all_threads'
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Reloading all threads
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'NoneType' object has no attribute 'stop_all_threads'
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 428, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 151, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    cmd(args)  # Run the function
+    ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 236, in reload_fms
+    self.thread_handler.stop_all_threads()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stop_all_threads'
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: list index out of range
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 428, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 151, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    cmd(args)  # Run the function
+    ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 368, in log_level
+    level = cmd[1].upper()
+            ~~~^^^
+IndexError: list index out of range
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[WARNING] Invalid control pin. Must be at least 4 digits.
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Stopped
+[INFO] Thread event_handler: Stopped
+[INFO] Thread api: Stopped
+[WARNING] Invalid control pin. Please try again.
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user

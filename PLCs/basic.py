@@ -71,5 +71,3 @@ def update_buttons():
         status ["astop"][2] = astop_3.is_pressed
         
         time.sleep(0.05)
-
-def 
