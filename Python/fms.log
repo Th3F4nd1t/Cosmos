@@ -382,3 +382,396 @@ IndexError: list index out of range
 [WARNING] Invalid control pin. Please try again.
 [INFO] FMS ended
 [IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 9999.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Stopped
+[INFO] Thread event_handler: Stopped
+[INFO] Thread api: Stopped
+[WARNING] Invalid control pin. Please try again.
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[WARNING] Log level not specified
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: list index out of range
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 509, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 172, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    c = cmd(args)  # Run the function
+        ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 36, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 48, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 448, in log_level
+    level = cmd[1].upper()
+            ~~~^^^
+IndexError: list index out of range
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[WARNING] Log level not specified
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 1
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 513, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 172, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    c = cmd(args)  # Run the function
+        ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 36, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 48, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 449, in log_level
+    self.logger.set_log_level(Logger.LogLevel[int(cmd[0])])
+                              ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\enum.py", line 792, in __getitem__
+    return cls._member_map_[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 1
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 0.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[WARNING] Control pin not set. Please set control pin first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Log level set to DEBUG
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] command (example usage) | description
+[INFO] start (start) | starts the threads of the FMS, beings attempting to connect to ds and plcs, begins tracking events
+[INFO] stop (stop) | ends the threads of the fms, stops everything that 'start' begins
+[INFO] reload (reload <thread_name>) stops then starts the provided thread, if none reloads all threads
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Reloading all threads
+[INFO] All threads reloaded
+[INFO] Log level set to INFO
+[INFO] Active threads:
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Stopped
+[INFO] Thread event_handler: Stopped
+[INFO] Thread api: Stopped
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Log level set to DEBUG
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Running
+[INFO] Thread event_handler: Running
+[INFO] Thread api: Running
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1010.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1010.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[INFO] Active threads:
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Running
+[INFO] Thread event_handler: Running
+[INFO] Thread api: Running
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: argument of type 'builtin_function_or_method' is not iterable
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 584, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 171, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    c = cmd(args)  # Run the function
+        ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 35, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 47, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 389, in enable_teams
+    if team in self.ds_map.keys:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'builtin_function_or_method' is not iterable
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 123.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] No teams specified, enabling all
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMSThread' object has no attribute 'enable'
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 584, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 171, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    c = cmd(args)  # Run the function
+        ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 35, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 47, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 377, in enable_teams
+    self.thread_handler.get_thread("ds_red_1").enable()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FMSThread' object has no attribute 'enable'
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[IMPORTANT] FMS stopped by user

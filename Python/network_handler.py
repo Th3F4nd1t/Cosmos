@@ -1,5 +1,5 @@
 from ds import Station
-impr
+
 class NetworkHandler:
     def __init__(self, 
                  network_adapter: str,

@@ -12,7 +12,7 @@ class Logger:
 
     def __init__(self, log_file='fms.log'):
         self.log_file = log_file
-        self.log_show_level = self.LogLevel.INFO
+        self.log_show_level = self.LogLevel.DEBUG
 
 
     def set_log_level(self, level: LogLevel):

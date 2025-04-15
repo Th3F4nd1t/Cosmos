@@ -7,17 +7,8 @@ from ds import DriverStation, DriverStationMode, DriverStationMatchType, Station
 import random
 from collections import defaultdict
 
-# # Define your root and nested command contexts
-# root = CommandContext("")
-
-# calc_ctx = CommandContext("calc")
-# calc_ctx.add_command("add", lambda args: print(int(args[0]) + int(args[1])))
-# calc_ctx.add_command("sub", lambda args: print(int(args[0]) - int(args[1])))
-
-# root.add_command("calc", calc_ctx)
-
-# # Run the beast
-# shell_loop(root)
+class FMSState:
+    WAITING = 0
 
 class FMS:
     def __init__(self):
@@ -26,6 +17,14 @@ class FMS:
         self.isStarted = False
 
         self.matches = []
+        self.ds_map = {
+            "9991" : Station.RED1,
+            "9992" : Station.RED2,
+            "9993" : Station.RED3,
+            "9994" : Station.BLUE1,
+            "9995" : Station.BLUE2,
+            "9996" : Station.BLUE3
+        }
 
 
     def requires_fms(func):
@@ -239,9 +238,6 @@ class FMS:
 
         self.logger.log("FMS stopped", Logger.LogLevel.INFO)
 
-        # Exit the shell loop
-        return 1
-
     @requires_fms
     @requires_pin
     def reload_fms(self, cmd):
@@ -270,7 +266,11 @@ class FMS:
         ...
 
     def help(self, cmd):
-        ...
+        self.logger.log("command (example usage) | description")
+        self.logger.log("start (start) | starts the threads of the FMS, beings attempting to connect to ds and plcs, begins tracking events")
+        self.logger.log("stop (stop) | ends the threads of the fms, stops everything that 'start' begins")
+        self.logger.log("reload (reload <thread_name>) stops then starts the provided thread, if none reloads all threads")
+
 
     @requires_fms
     @requires_pin
@@ -371,12 +371,72 @@ class FMS:
     @requires_fms
     @requires_pin
     def enable_teams(self, cmd):
-        ...
+        if len(cmd[1]) < 1:
+            self.logger.log("No teams specified, enabling all")
+            
+            self.thread_handler.get_thread("ds_red_1").ds.enable()
+            self.thread_handler.get_thread("ds_red_2").ds.enable()
+            self.thread_handler.get_thread("ds_red_3").ds.enable()
+            self.thread_handler.get_thread("ds_blue_1").ds.enable()
+            self.thread_handler.get_thread("ds_blue_2").ds.enable()
+            self.thread_handler.get_thread("ds_blue_3").ds.enable()
+            
+            self.logger.log("All teams enabled", Logger.LogLevel.DEBUG)
+            return
+        
+        cmd = cmd[1]
+        for team in cmd:
+            if team in self.ds_map.keys:
+                if self.ds_map[team] == Station.RED1:
+                    self.thread_handler.get_thread("ds_red_1").enable()
+                elif self.ds_map[team] == Station.RED2:
+                    self.thread_handler.get_thread("ds_red_2").enable()
+                elif self.ds_map[team] == Station.RED3:
+                    self.thread_handler.get_thread("ds_red_3").enable()
+                elif self.ds_map[team] == Station.BLUE1:
+                    self.thread_handler.get_thread("ds_blue_1").enable()
+                elif self.ds_map[team] == Station.BLUE2:
+                    self.thread_handler.get_thread("ds_blue_2").enable()
+                elif self.ds_map[team] == Station.BLUE3:
+                    self.thread_handler.get_thread("ds_blue_3").enable()
+                self.logger.log(f"Team {team} enabled", Logger.LogLevel.DEBUG)
+            else:
+                self.logger.log(f"Team {team} not found on field, skipping", Logger.LogLevel.WARNING)
 
     @requires_fms
     @requires_pin
     def disable_teams(self, cmd):
-        ...
+        if len(cmd[1]) < 1:
+            self.logger.log("No teams specified, disabling all")
+            
+            self.thread_handler.get_thread("ds_red_1").ds.disable()
+            self.thread_handler.get_thread("ds_red_2").ds.disable()
+            self.thread_handler.get_thread("ds_red_3").ds.disable()
+            self.thread_handler.get_thread("ds_blue_1").ds.disable()
+            self.thread_handler.get_thread("ds_blue_2").ds.disable()
+            self.thread_handler.get_thread("ds_blue_3").ds.disable()
+            
+            self.logger.log("All teams disabled", Logger.LogLevel.DEBUG)
+            return
+        
+        cmd = cmd[1]
+        for team in cmd:
+            if team in self.ds_map.keys():
+                if self.ds_map[team] == Station.RED1:
+                    self.thread_handler.get_thread("ds_red_1").disable()
+                elif self.ds_map[team] == Station.RED2:
+                    self.thread_handler.get_thread("ds_red_2").disable()
+                elif self.ds_map[team] == Station.RED3:
+                    self.thread_handler.get_thread("ds_red_3").disable()
+                elif self.ds_map[team] == Station.BLUE1:
+                    self.thread_handler.get_thread("ds_blue_1").disable()
+                elif self.ds_map[team] == Station.BLUE2:
+                    self.thread_handler.get_thread("ds_blue_2").disable()
+                elif self.ds_map[team] == Station.BLUE3:
+                    self.thread_handler.get_thread("ds_blue_3").disable()
+                self.logger.log(f"Team {team} disabled", Logger.LogLevel.DEBUG)
+            else:
+                self.logger.log(f"Team {team} not found on field, skipping", Logger.LogLevel.WARNING)
 
     @requires_fms
     def plc_estop(self, cmd):
@@ -445,7 +505,7 @@ class FMS:
             self.logger.log("Log level not specified", Logger.LogLevel.WARNING)
             return
 
-        level = cmd[1].upper()
+        level = cmd[0].upper()
         if level in Logger.LogLevel.__members__:
             self.logger.set_log_level(Logger.LogLevel[level])
             self.logger.log(f"Log level set to {level}", Logger.LogLevel.INFO)
@@ -488,17 +548,32 @@ class FMS:
     
     def control_target(self):
         # Control thread logic here
-        pass
+        # should hold state of fms
+        self.state = FMSState.WAITING
+        while True:
+            if self.state == FMSState.WAITING:
+                pass
 
 
     def event_handler_target(self):
         # Event handler logic here
-        pass
+        events = []
+        while True:
+            if events != []:
+                # deal with events
+                pass
+            
 
 
     def api_target(self):
-        # API thread logic here
-        pass
+        # start a flask server
+
+        # define API endpoints
+
+        # start the app
+
+        # temp loop
+        while True: pass
 
 
 

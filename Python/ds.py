@@ -111,3 +111,9 @@ class DriverStation:
             self.log("Packet number overflow", "WARNING")
 
         self.sock.sendto(packet, (self.ip, self.udp_send_port))
+
+    def enable(self):
+        self.isEnabled = True
+
+    def disable(self):
+        self.isEnabled = False
