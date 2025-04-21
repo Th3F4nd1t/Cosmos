@@ -6,6 +6,7 @@ from shell import CommandContext, shell_loop
 from ds import DriverStation, DriverStationMode, DriverStationMatchType, Station
 import random
 from collections import defaultdict
+from flask import Flask, jsonify, request
 
 class FMSState:
     WAITING = 0
@@ -25,6 +26,20 @@ class FMS:
             "9995" : Station.BLUE2,
             "9996" : Station.BLUE3
         }
+
+        self.set_pin()
+
+    def set_pin(self):
+        while True:
+            self.pin = input("Create control pin: ")
+            if self.pin.isdigit() and len(self.pin) >= 4:
+                self.pin = int(self.pin)
+                break
+            else:
+                self.logger.log("Invalid control pin. Must be at least 4 digits.", Logger.LogLevel.WARNING)
+
+        self.logger.log(f"Control pin set to {self.pin}.", Logger.LogLevel.INFO)
+        self.logger.log(f"DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.", Logger.LogLevel.WARNING)
 
 
     def requires_fms(func):
@@ -175,6 +190,7 @@ class FMS:
 
     # Command functions
 
+    @requires_pin
     def start_fms(self, cmd):
         self.logger.log("Starting FMS", Logger.LogLevel.INFO)
 
@@ -210,17 +226,7 @@ class FMS:
         self.thread_handler.start_all_threads()
         self.logger.log("All threads started", Logger.LogLevel.DEBUG)
 
-        while True:
-            self.pin = input("Create control pin: ")
-            if self.pin.isdigit() and len(self.pin) >= 4:
-                self.pin = int(self.pin)
-                break
-            else:
-                self.logger.log("Invalid control pin. Must be at least 4 digits.", Logger.LogLevel.WARNING)
-
-        self.logger.log(f"Control pin set to {self.pin}.", Logger.LogLevel.INFO)
-        self.logger.log(f"DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.", Logger.LogLevel.WARNING)
-
+        
         self.logger.log("FMS started", Logger.LogLevel.INFO)
         self.isStarted = True
 
@@ -272,7 +278,6 @@ class FMS:
         self.logger.log("reload (reload <thread_name>) stops then starts the provided thread, if none reloads all threads")
 
 
-    @requires_fms
     @requires_pin
     def end(self, cmd):
         self.logger.log("FMS ended", Logger.LogLevel.INFO)
@@ -281,11 +286,25 @@ class FMS:
     @requires_fms
     @requires_pin
     def prestart_match(self, cmd):
+        # Configure the switch for FMS server -> DS vlanning based on IPs
+        # Configure AP (set teaam numbers)
+        # Set team numbers on screens
+        # Check for E/A-stops, if engaged, alert and wait for release
+        self.logger.log("Prestart match configuration complete", Logger.LogLevel.INFO)
+
         ...
 
     @requires_fms
     @requires_pin
     def start_match(self, cmd):
+
+        self.logger.log("Auton started", Logger.LogLevel.IMPORTANT)
+
+
+        self.logger.log("Teleop started", Logger.LogLevel.IMPORTANT)
+
+
+        self.logger.log("Match ended", Logger.LogLevel.IMPORTANT)
         ...
 
     @requires_fms
@@ -298,27 +317,22 @@ class FMS:
     def replay_match(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def populate_random_matches(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def populate_teams(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def populate_file(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def add_team(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def remove_team(self, cmd):
         ...
@@ -438,21 +452,16 @@ class FMS:
             else:
                 self.logger.log(f"Team {team} not found on field, skipping", Logger.LogLevel.WARNING)
 
-    @requires_fms
     def plc_estop(self, cmd):
         ...
 
-    @requires_fms
-    @requires_pin
     def plc_astop(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def plc_panel_update(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def plc_panel_reset(self, cmd):
         ...
@@ -460,17 +469,14 @@ class FMS:
     def plc_panel_color(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def ap_update(self, cmd):
         ...
 
-    @requires_fms
     @requires_pin
     def ap_reset(self, cmd):
         ...
 
-    @requires_fms
     def ap_status(self, cmd):
         ...
 
@@ -497,7 +503,6 @@ class FMS:
             for name, thread in self.thread_handler.threads.items():
                 self.logger.log(f"Thread {name}: {'Running' if thread.is_alive() else 'Stopped'}", Logger.LogLevel.INFO)
 
-    @requires_fms
     @requires_pin
     def log_level(self, cmd):
         cmd = cmd[1]
@@ -512,7 +517,6 @@ class FMS:
         else:
             self.logger.log(f"Invalid log level: {level}", Logger.LogLevel.WARNING)
 
-    @requires_fms
     @requires_pin
     def log_file(self, cmd):
         cmd = cmd[1]
@@ -526,7 +530,6 @@ class FMS:
                     
 
     
-    @requires_fms
     def show_matches(self, cmd):
         self.logger.log("Matches:", Logger.LogLevel.INFO)
         for i, match in enumerate(self.matches):
@@ -567,15 +570,19 @@ class FMS:
 
     def api_target(self):
         # start a flask server
+        app = Flask(__name__)
 
         # define API endpoints
+        @app.route('/driverstations', methods=['GET'])
+        def driverstations():
+            driverstations = {
+                "red1": "9991",
+                "red2": "9992",
+            }
+            return jsonify(driverstations)
 
         # start the app
-
-        # temp loop
-        while True: pass
-
-
+        app.run(host='10.0.100.5', port=5000)
 
 if __name__ == "__main__":
     while True:

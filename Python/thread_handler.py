@@ -1,7 +1,8 @@
 import threading
 
 class FMSThread(threading.Thread):
-    def __init__(self, target, args=(), kwargs=None):
+    def __init__(self, target, args=(), kwargs=None, ds=None):
+        self.ds = ds
         super().__init__(target=target, args=args, kwargs=kwargs or {}, daemon=True)
         self._stop_event = threading.Event()
 

@@ -775,3 +775,219 @@ AttributeError: 'FMSThread' object has no attribute 'enable'
 [IMPORTANT] FMS stopped by user
 [DEBUG] Commands loaded
 [IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[WARNING] FMS not started. Please start FMS first.
+[WARNING] FMS not started. Please start FMS first.
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] Control pin set to 9090.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Running
+[INFO] Thread event_handler: Running
+[INFO] Thread api: Running
+[INFO] No teams specified, enabling all
+[ERROR] FMS hard crashed. All unsaved data lost.
+[ERROR] Error: 'FMSThread' object has no attribute 'ds'
+[DEBUG] Traceback: Traceback (most recent call last):
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 584, in <module>
+    c = fms.main()
+        ^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 171, in main
+    c = shell_loop(root, self)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 47, in shell_loop
+    current = current.run_command(command, args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\shell.py", line 17, in run_command
+    c = cmd(args)  # Run the function
+        ^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 35, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 47, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fanpr\Desktop\Projects\Active\Cosmos\Python\fms.py", line 377, in enable_teams
+    self.thread_handler.get_thread("ds_red_1").ds.enable()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FMSThread' object has no attribute 'ds'
+
+[WARNING] Please report the above error to the developers and include your fms.log file.
+[INFO] Restarting FMS in 5 seconds...
+[DEBUG] Commands loaded
+[WARNING] FMS not started. Please start FMS first.
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[WARNING] Invalid control pin. Must be at least 4 digits.
+[INFO] Control pin set to 1234.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Stopped
+[INFO] Thread ds_red_2: Stopped
+[INFO] Thread ds_red_3: Stopped
+[INFO] Thread ds_blue_1: Stopped
+[INFO] Thread ds_blue_2: Stopped
+[INFO] Thread ds_blue_3: Stopped
+[INFO] Thread control: Stopped
+[INFO] Thread event_handler: Stopped
+[INFO] Thread api: Stopped
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] command (example usage) | description
+[INFO] start (start) | starts the threads of the FMS, beings attempting to connect to ds and plcs, begins tracking events
+[INFO] stop (stop) | ends the threads of the fms, stops everything that 'start' begins
+[INFO] reload (reload <thread_name>) stops then starts the provided thread, if none reloads all threads
+[INFO] command (example usage) | description
+[INFO] start (start) | starts the threads of the FMS, beings attempting to connect to ds and plcs, begins tracking events
+[INFO] stop (stop) | ends the threads of the fms, stops everything that 'start' begins
+[INFO] reload (reload <thread_name>) stops then starts the provided thread, if none reloads all threads
+[WARNING] FMS not started. Please start FMS first.
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[INFO] Active threads:
+[INFO] Thread ds_red_1: Running
+[INFO] Thread ds_red_2: Running
+[INFO] Thread ds_red_3: Running
+[INFO] Thread ds_blue_1: Running
+[INFO] Thread ds_blue_2: Running
+[INFO] Thread ds_blue_3: Running
+[INFO] Thread control: Running
+[INFO] Thread event_handler: Running
+[INFO] Thread api: Stopped
+[INFO] command (example usage) | description
+[INFO] start (start) | starts the threads of the FMS, beings attempting to connect to ds and plcs, begins tracking events
+[INFO] stop (stop) | ends the threads of the fms, stops everything that 'start' begins
+[INFO] reload (reload <thread_name>) stops then starts the provided thread, if none reloads all threads
+[INFO] Stopping FMS
+[DEBUG] All threads stopped
+[INFO] FMS stopped
+[INFO] Log level set to INFO
+[INFO] FMS ended
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[IMPORTANT] FMS stopped by user
+[INFO] Control pin set to 3767.
+[WARNING] DO NOT SHARE THIS PIN WITH ANYONE WHO IS NOT APPROVED TO CONTROL THE FMS.
+[DEBUG] Commands loaded
+[INFO] Starting FMS
+[DEBUG] Thread handler created
+[DEBUG] Driver station threads created
+[DEBUG] Control thread created
+[DEBUG] Event handler thread created
+[DEBUG] API thread created
+[DEBUG] All threads started
+[INFO] FMS started
+[IMPORTANT] FMS stopped by user

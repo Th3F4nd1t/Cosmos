@@ -114,6 +114,8 @@ class DriverStation:
 
     def enable(self):
         self.isEnabled = True
+        print("enabled:" + str(self.station_number))
 
     def disable(self):
         self.isEnabled = False
+        print("disabled:" + str(self.station_number))
