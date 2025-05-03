@@ -582,7 +582,7 @@ class FMS:
             return jsonify(driverstations)
 
         # start the app
-        app.run(host='10.0.100.5', port=5000)
+        app.run(host='10.0.100.5', port=)
 
 if __name__ == "__main__":
     while True:
