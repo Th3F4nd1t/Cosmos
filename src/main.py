@@ -3,11 +3,12 @@ import logging
 import threading
 import time
 import traceback
-from flask import Flask, request
+# from flask import Flask, request
 
 from core.event_bus import EventBus
 from core.match_controller import MatchController
 from core.state_store import StateStore, States
+from core.plc_handler import PLCHandler
 from utils import driverstation_ip
 from utils.config_loader import load_config
 from utils.user_attention import UserAttentionQueue
@@ -49,17 +50,17 @@ class FMS:
         # self._web_server_thread.start()
 
 
-    def _web_server(self):
-        # flask API server
-        app = Flask("COSMOS-API")
+    # def _web_server(self):
+    #     # flask API server
+    #     app = Flask("COSMOS-API")
 
-        # TODO: make api, no ui, with authentication
+    #     # TODO: make api, no ui, with authentication
 
-        app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+    #     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 
     def _user_attention_handler(self):
         while True:
-            item = self.user_attention.get()
+            item:tuple[str, list[str], int, int] | None = self.user_attention.get()
             if item is not None:
 
                 if item[1] is not None: # options are provided
@@ -127,21 +128,31 @@ class FMS:
 
                     case States.BOOTING:
                         # Setup thingies.
+                        self.main_plc = PLCHandler("10.0.100.200")
+                        self.red_plc = PLCHandler("10.0.100.210")
+                        self.blue_plc = PLCHandler("10.0.100.220")
                         # Connect to main switch and push first config
                         # Connect to red switch and push first config
                         # Connect to blue switch and push first config
-                        # Connect to main PLC and start up remote server
-                        # Connect to red PLC and start up remote server
-                        # Connect to blue PLC and start up remote server
+
+                        # Start PLC servers
+                        self.main_plc.start_remote_server()
+                        self.red_plc.start_remote_server()
+                        self.blue_plc.start_remote_server()
+                        
                         # Connect to AP
 
                         # test connections
+                        self.main_plc.get_estops()
+                        self.red_plc.get_estops()
+                        self.blue_plc.get_estops()
 
-
-                        time.sleep(1)  # Simulate booting time
                         self.state_store.set_state(States.MODELESS)
 
                     case States.MODELESS:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
+
                         # ask for next state
                         idn = self.user_attention.add("MODELESS, to where?", ["field-test", "field-disabled", "field-presentation", "field-development", "field-diagnostic", "development-configuring", "testing-configuring", "match-configuring", "shutting-down"])
                         
@@ -149,31 +160,45 @@ class FMS:
                         while self.user_attention.get(idn)[3] is None: continue
                         
                         match self.user_attention.get(idn)[3]:
-                            case 0:
-                                self.state_store.set_state(States.FIELD_TEST)
-                            case 1:
-                                self.state_store.set_state(States.FIELD_DISABLED)
-                            case 2:
-                                self.state_store.set_state(States.FIELD_PRESENTATION)
-                            case 3:
-                                self.state_store.set_state(States.FIELD_DEVELOPMENT)
-                            case 4:
-                                self.state_store.set_state(States.FIELD_DIAGNOSTIC)
-                            case 5:
-                                self.state_store.set_state(States.DEVELOPMENT_CONFIGURING)
-                            case 6:
-                                self.state_store.set_state(States.TESTING_CONFIGURING)
-                            case 7:
-                                self.state_store.set_state(States.MATCH_CONFIGURING)
-                            case 8:
-                                self.state_store.set_state(States.SHUTTING_DOWN)
+                            case 0: self.state_store.set_state(States.FIELD_TEST)
+                            case 1: self.state_store.set_state(States.FIELD_DISABLED)
+                            case 2: self.state_store.set_state(States.FIELD_PRESENTATION)
+                            case 3: self.state_store.set_state(States.FIELD_DEVELOPMENT)
+                            case 4: self.state_store.set_state(States.FIELD_DIAGNOSTIC)
+                            case 5: self.state_store.set_state(States.DEVELOPMENT_CONFIGURING)
+                            case 6: self.state_store.set_state(States.TESTING_CONFIGURING)
+                            case 7: self.state_store.set_state(States.MATCH_CONFIGURING)
+                            case 8: self.state_store.set_state(States.SHUTTING_DOWN)
+
                         logger.info(f"Proceeding to {self.state_store.get_state()}")
+                        self.user_attention.remove(idn)
 
                     case States.FIELD_TEST:
                         # wait for all estops to be pushed
+                        while not (all(self.main_plc.get_estop(PLCHandler.Station.FIELD).values()) and
+                                    all(self.red_plc.get_estops().values()) and
+                                    all(self.blue_plc.get_estops().values())):
+                            time.sleep(1)
+
                         # wait for all a-stops to be pushed
-                        # turn lights green
+                        while not (all(self.red_plc.get_astops().values()) and
+                                    all(self.blue_plc.get_astops().values())):
+                            time.sleep(1)
+
+                        # turn lights all colors
+                        for color in PLCHandler.LightColor:
+                            self.red_plc.set_light_color_alliance(color)
+                            self.blue_plc.set_light_color_alliance(color)
+
+                            idn = self.user_attention.add("Next light color?", ["y"])
+                            # Wait for user attention to respond
+                            while self.user_attention.get(idn)[3] is None: continue
+                            self.user_attention.remove(idn)
+
                         # set team numbers
+                        self.main_plc.set_number(PLCHandler.Station.FIELD, 1)
+                        self.red_plc.set_number(PLCHandler.Station.FIELD, 2)
+                        self.blue_plc.set_number(PLCHandler.Station.FIELD, 3)
                         # test audio
                         # test AP?
                         ...
@@ -402,5 +427,4 @@ if __name__ == "__main__":
         logger.critical("---- HOLY COW WHAT DID YOU DO? ----")
         tb_text = ''.join(traceback.format_exception(type(e), e, e.__traceback__))
         logger.critical(f"Exception:\n{tb_text}")
-        logger.critical("🚨 PANIC MODE ENGAGED: Something broke so catastrophically that even the exception handler is crying. "
-                "This is beyond duct tape, prayers, and caffeine. Pack it up, go home, and reconsider your life choices.")
+        logger.critical("This is beyond duct tape, prayers, and caffeine. Pack it up, go home, and reconsider your life choices.")

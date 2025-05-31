@@ -1,6 +1,6 @@
 
 from enum import Enum
-from typing import List
+from typing import Any, List
 
 
 class State:
@@ -10,10 +10,10 @@ class State:
     next_states: List[str]
 
     def __init__(self, name: str, human_name: str, description: str, next_states: List[str]):
-        self.name = name
-        self.human_name = human_name
-        self.description = description
-        self.next_states = next_states
+        self.name:str = name
+        self.human_name:str = human_name
+        self.description:str = description
+        self.next_states:List[str] = next_states
 
     def get_name(self) -> str:
         """
@@ -218,7 +218,7 @@ class States(Enum):
 
 class StateStore:
     def __init__(self):
-        self.state = {
+        self.state:dict[str, Any] = {
             "state" : States.NULL,
             "teams" : {
                 "1" : {
