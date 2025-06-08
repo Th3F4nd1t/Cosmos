@@ -227,9 +227,10 @@ class StateStore:
                         "ds_connected" : False,
                         "radio_connected" : False,
                         "rio_connected" : False,
-                        "state" : "disabled", # disabled, auto, teleop
+                        "state" : "disabled", # disabled, auto, teleop, test
                         "estop" : False,
-                        "astop" : False
+                        "astop" : False,
+                        "enabled" : False # True if the robot is enabled, False otherwise
                     }
                 },
                 "2" : {
@@ -238,9 +239,10 @@ class StateStore:
                         "ds_connected" : False,
                         "radio_connected" : False,
                         "rio_connected" : False,
-                        "state" : "disabled", # disabled, auto, teleop
+                        "state" : "disabled", # disabled, auto, teleop, test
                         "estop" : False,
-                        "astop" : False
+                        "astop" : False,
+                        "enabled" : False
                     }
                 },
                 "3" : {
@@ -249,9 +251,10 @@ class StateStore:
                         "ds_connected" : False,
                         "radio_connected" : False,
                         "rio_connected" : False,
-                        "state" : "disabled", # disabled, auto, teleop
+                        "state" : "disabled", # disabled, auto, teleop, test
                         "estop" : False,
-                        "astop" : False
+                        "astop" : False,
+                        "enabled" : False
                     }
                 },
                 "4" : {
@@ -260,9 +263,10 @@ class StateStore:
                         "ds_connected" : False,
                         "radio_connected" : False,
                         "rio_connected" : False,
-                        "state" : "disabled", # disabled, auto, teleop
+                        "state" : "disabled", # disabled, auto, teleop, test
                         "estop" : False,
-                        "astop" : False
+                        "astop" : False,
+                        "enabled" : False
                     }
                 },
                 "5" : {
@@ -271,9 +275,10 @@ class StateStore:
                         "ds_connected" : False,
                         "radio_connected" : False,
                         "rio_connected" : False,
-                        "state" : "disabled", # disabled, auto, teleop
+                        "state" : "disabled", # disabled, auto, teleop, test
                         "estop" : False,
-                        "astop" : False
+                        "astop" : False,
+                        "enabled" : False
                     }
                 },
                 "6" : {
@@ -282,15 +287,17 @@ class StateStore:
                         "ds_connected" : False,
                         "radio_connected" : False,
                         "rio_connected" : False,
-                        "state" : "disabled", # disabled, auto, teleop
+                        "state" : "disabled", # disabled, auto, teleop, test
                         "estop" : False,
-                        "astop" : False
+                        "astop" : False,
+                        "enabled" : False
                     }
                 },
             },
             "match" : {
                 "number" : 0,
-                "type" : "practice", # practice, qualification, elimination
+                "repeat" : 0,
+                "type" : "test", # test, practice, qualification, playoff
                 "time_left" : -1,
                 "progression" : [ # state, time
                     [States.MATCH_AUTONOMOUS, 15],

@@ -12,6 +12,7 @@ from core.plc_handler import PLCHandler
 from utils import driverstation_ip
 from utils.config_loader import load_config
 from utils.user_attention import UserAttentionQueue
+from core.station_manager import StationManager
 # Start station managers, PLC  handler, etc
 # Launch networkhandler
 # launch api server
@@ -48,6 +49,11 @@ class FMS:
         # Start web server
         # self._web_server_thread = threading.Thread(target=self._web_server, daemon=True)
         # self._web_server_thread.start()
+
+        # Station handler
+        self._station_handler = StationManager(self)
+        self._station_handler_thread = threading.Thread(target=self._station_handler.run, daemon=True)
+        self._station_handler_thread.start()
 
 
     # def _web_server(self):
@@ -174,6 +180,18 @@ class FMS:
                         self.user_attention.remove(idn)
 
                     case States.FIELD_TEST:
+                        # coloring for team numbers
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
+                        
+                        # Set team numbers
+                        self.red_plc.set_number(PLCHandler.Station.LEFT, 9991)
+                        self.red_plc.set_number(PLCHandler.Station.CENTER, 9992)
+                        self.red_plc.set_number(PLCHandler.Station.RIGHT, 9993)
+                        self.blue_plc.set_number(PLCHandler.Station.LEFT, 9994)
+                        self.blue_plc.set_number(PLCHandler.Station.CENTER, 9995)
+                        self.blue_plc.set_number(PLCHandler.Station.RIGHT, 9996)
+
                         # wait for all estops to be pushed
                         while not (all(self.main_plc.get_estop(PLCHandler.Station.FIELD).values()) and
                                     all(self.red_plc.get_estops().values()) and
@@ -195,37 +213,55 @@ class FMS:
                             while self.user_attention.get(idn)[3] is None: continue
                             self.user_attention.remove(idn)
 
-                        # set team numbers
-                        self.main_plc.set_number(PLCHandler.Station.FIELD, 1)
-                        self.red_plc.set_number(PLCHandler.Station.FIELD, 2)
-                        self.blue_plc.set_number(PLCHandler.Station.FIELD, 3)
                         # test audio
+                        idn = self.user_attention.add("Test audio?", ["Yes", "No"])
+                        # Wait for user attention to respond
+                        while self.user_attention.get(idn)[3] is None: continue
+                        match self.user_attention.get(idn)[3]:
+                            case 0:
+                                # Test audio
+                                ...
+                            case 1:
+                                # nothing, continue
+                                ...
+                        
                         # test AP?
-                        ...
+                        
 
                     case States.FIELD_DISABLED:
                         # Turn all lights off
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.OFF)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.OFF)
                         # Turn off PLC servers
                         # Push config to main switch to disable POE to robot AP, and to cut off connection from DS
                         ...
                     
                     case States.FIELD_PRESENTATION:
                         # Turn all lights to a set color
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
                         # Disable all robots
                         # Push config to main switch to disable POE to robot AP, and to cut off connection from DS
                         ...
                     
                     case States.FIELD_DEVELOPMENT:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.OFF)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.OFF)
                         # Allow full control of all field aspects to the API
+
                         # Enable development sites on the webserver
                         ...
-                    
+
                     case States.FIELD_DIAGNOSTIC:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.OFF)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.OFF)
                         # Allow full control of all field aspects to the API
                         # Enable diagnostic sites on the webserver
                         ...
                     
                     case States.DEVELOPMENT_CONFIGURING:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
                         # Ask for teams
                         # setup teams in state store
                         # set switch configs
@@ -237,21 +273,29 @@ class FMS:
                         ...
                     
                     case States.DEVELOPMENT_MAIN:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
                         # allow robots to be enabled and disable via website, along with auto runnning, etc.
                         # lights are set to red/blue depending on the robot
                         ...
                     
                     case States.DEVELOPMENT_ESTOP:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.ESTOP)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.ESTOP)
                         # estops all robots, not just the one teams
                         # turn lights orange
                         ...
                     
                     case States.DEVELOPMENT_GREENLIGHT:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.GREENLIGHT)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.GREENLIGHT)
                         # disable all robots
                         # turn lights green
                         ...
                     
                     case States.TESTING_CONFIGURING:
+                        self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                        self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
                         # Ask for teams
                         # setup teams in state store
                         # set switch configs
