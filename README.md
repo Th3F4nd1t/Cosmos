@@ -1,5 +1,6 @@
 # Cosmos FMS
 An unofficial Field Management Software
+<br>
 Questions? Reach out to me on discord: @thefandit
 
 ## Features
@@ -84,3 +85,10 @@ Questions? Reach out to me on discord: @thefandit
 - Match-greenlight
 - Crashed
 - Shutting-down
+
+## Priorities
+- Estops
+- Enable/disable robots
+- Matches
+- Logging
+- Auto-scoring
