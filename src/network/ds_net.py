@@ -1,6 +1,5 @@
 from enum import Enum
 import datetime
-from utils.ip import ip
 
 
 class Station(Enum):
@@ -30,7 +29,6 @@ class UDPDriverStationPacket:
         # Create basic fields to be filled before sending
         self.team_number:int = None
         self.station:Station = None
-        self.ip:ip = None
         
         self.packet_number:int = None
 
