@@ -32,4 +32,7 @@ class ip:
         """
         if not (0 <= a <= 255 and 0 <= b <= 255 and 0 <= c <= 255 and 0 <= d <= 255):
             raise ValueError(f"Invalid IP address: {a}.{b}.{c}.{d}")
-        return f"{a}.{b}.{c}.{d}"
+        self.ip = f"{a}.{b}.{c}.{d}"
+
+    def get(self) -> str:
+        return self.ip
