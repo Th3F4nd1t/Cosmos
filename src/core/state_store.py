@@ -219,6 +219,7 @@ class States(Enum):
 class StateStore:
     def __init__(self):
         self.state:dict[str, Any] = {
+            "running" : True, # False will force stop the FMS. NOT RECOMMENDED
             "state" : States.NULL,
             "teams" : {
                 "1" : {

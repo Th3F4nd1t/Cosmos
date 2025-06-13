@@ -2,12 +2,12 @@ from enum import Enum
 import schedule
 import time
 
-from utils.driverstation_ip import driverstation_ip
-from main import FMS
+from utils.ip import driverstation_ip
+# from main import FMS
 from network.ds_net import Station, DriverStationMode, DriverStationMatchType, UDPDriverStationPacket
 
 class StationManager:
-    def __init__(self, fms:FMS):
+    def __init__(self, fms):
         """
         Initialize the StationManager with a station ID and team number.
         """

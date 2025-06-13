@@ -9,10 +9,12 @@ from core.event_bus import EventBus
 from core.match_controller import MatchController
 from core.state_store import StateStore, States
 from core.plc_handler import PLCHandler
-from utils import driverstation_ip
+from tools.terminal.shell_handler import ShellHandler
+from utils import ip
 from utils.config_loader import load_config
 from utils.user_attention import UserAttentionQueue
 from core.station_manager import StationManager
+from utils.teams import TeamsManager
 # Start station managers, PLC  handler, etc
 # Launch networkhandler
 # launch api server
@@ -36,7 +38,7 @@ class FMS:
         self.user_attention = UserAttentionQueue()
 
         # spawn console user attention handler
-        self._user_attention_thread = threading.Thread(target=self._user_attention_handler, daemon=True)
+        self._user_attention_thread = threading.Thread(target=self.shell, daemon=True)
         self._user_attention_thread.start()
 
         # create state store
@@ -56,6 +58,12 @@ class FMS:
         self._station_handler_thread.start()
 
 
+        # Remote shell handler
+        self.shell_handler = ShellHandler(self)
+        self._remote_shell_thread = threading.Thread(target=self._remote_shell_handler, daemon=True)
+        self._remote_shell_thread.start()
+
+
     # def _web_server(self):
     #     # flask API server
     #     app = Flask("COSMOS-API")
@@ -64,38 +72,94 @@ class FMS:
 
     #     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 
-    def _user_attention_handler(self):
-        while True:
-            item:tuple[str, list[str], int, int] | None = self.user_attention.get()
-            if item is not None:
+    def _user_attention_handler(self, ctx):
+        item:tuple[str, list[str], int, int] | None = self.user_attention.get()
+        if item is not None:
 
-                if item[1] is not None: # options are provided
-                    print(f"User attention: {item[0]}")
-                    for i, option in enumerate(item[1]):
-                        print(f"{i}: {option}")
-                    response = input("Select an option: ")
-                    try:
-                        response = int(response)
-                        if response < 0 or response >= len(item[1]):
-                            raise ValueError
-                    except ValueError:
-                        print("Invalid response, please try again.")
-                        continue
+            if item[1] is not None: # options are provided
+                print(f"User attention: {item[0]}")
+                for i, option in enumerate(item[1]):
+                    print(f"{i}: {option}")
+                response = input("Select an option: ")
+                try:
+                    response = int(response)
+                    if response < 0 or response >= len(item[1]):
+                        raise ValueError
+                except ValueError:
+                    print("Invalid response, please try again.")
+                    return
 
-                else: # no options provided, text input
-                    response = input(f"User attention: {item[0]}")
+            else: # no options provided, text input
+                response = input(f"User attention: {item[0]}")
 
-                self.user_attention.set_response(item[2],response)
+            self.user_attention.set_response(item[2],response)
+
+
+    def _remote_shell_handler(self):
+        # Should start an API to accept remote shell commands and track which things should be printed where.
+        # This is a placeholder for the remote shell handler.
+        logger.info("Remote shell handler is not implemented yet. This is a placeholder.")
+
+
+    # def shell(self):
+    #     # Teams management context
+    #     team_ctx = CommandContext("teams")
+    #     team_manager = TeamsManager()
+    #     team_ctx.add_command("list", lambda _: print(team_manager.get_all_teams()))
+    #     team_ctx.add_command("get", lambda args: print(team_manager.get_team(int(args[0])) if args else "Please provide a team number."))
+    #     team_ctx.add_command("add", lambda args: team_manager.add_team(int(args[0]), args[1]) if len(args) == 2 else print("Please provide a team number and name."))
+    #     team_ctx.add_command("remove", lambda args: team_manager.remove_team(int(args[0])) if args else print("Please provide a team number."))
+
+    #     # Debugging context
+    #     debug_ctx = CommandContext("debug")
+    #     debug_ctx.add_command("exception", lambda _: print(self.exception_queue))
+    #     debug_ctx.add_command("state", lambda _: print(self.state_store.get_state()))
+    #     debug_ctx.add_command("set_state", lambda args: self.state_store.set_state(States[args[0].upper()]) if args else print("Please provide a state."))
+
+    #     # Main command context
+    #     root = CommandContext("root")
+    #     # Functions
+    #     root.add_command("attend", self._user_attention_handler)
+    #     root.add_command("stop", self.request_stop)
+    #     root.add_command("fstop", self.stop)
+    #     root.add_command("start", self.start)
+
+    #     # Contexts
+    #     root.add_command("debug", debug_ctx)
+    #     root.add_command("teams", team_ctx)
+
+    #     shell_loop(root)
+
+
+    def request_stop(self, ctx):
+        if self.state_store.get_state() == States.MODELESS or self.state_store.get_state() == States.OFF:
+            logger.info("Stopping FMS...")
+            self.state_store.state["running"] = False
+            self._state_handler_thread.join()
+        return None
+
+    def stop(self, ctx):
+        logger.info("Stopping FMS by force...")
+        self.state_store.state["running"] = False
+        self._state_handler_thread.join()
+        return None
+    
+    def start(self, ctx):
+        logger.info("Starting FMS...")
+        self.state_store.state["running"] = True
+        self._state_handler_thread = threading.Thread(target=self.state_handler, daemon=True)
+        self._state_handler_thread.start()
+        return None
 
 
     def state_handler(self):
-        while True:
+        while self.state_store.state["running"]:
             try:
                 match self.state_store.get_state():
                     case States.NULL:
                         ...
                         # Error and ask if proceed to OFF, BOOTING, or CRASHED
-                        logger.error("State is NULL")
+                        self.shell_handler.broadcast("ERROR: State is NULL, please use `attend`")
                         idn = self.user_attention.add("State is NULL, please select a state to proceed", ["OFF", "BOOTING", "CRASHED"])
                         # Wait for user attention to respond
                         while self.user_attention.get(idn)[3] is None: continue
@@ -352,7 +416,7 @@ class FMS:
                         self.state_store.state["teams"] = {}
                         for team in teams:
                             self.state_store.state["teams"][team] = {
-                                "ip" : driverstation_ip.driverstation_ip(team),
+                                "ip" : ip.driverstation_ip(team),
                                 "status" : {
                                     "ds_connected" : False,
                                     "radio_connected" : False,

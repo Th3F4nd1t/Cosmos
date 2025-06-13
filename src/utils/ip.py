@@ -16,10 +16,20 @@ def driverstation_ip(team: int) -> str:
 
 
     if team < 100:  # 1 or 2 digits
-        return f"10.0.{team}.5"
+        return ip(10, 0, team, 5)
     elif team < 1000:  # 3 digits
-        return f"10.{team_str[0]}.{team_str[1:]}.5"
+        return ip(10, int(team_str[0]), int(team_str[1:]), 5)
     elif team < 10000:  # 4 digits
-        return f"10.{team_str[:2]}.{team_str[2:]}.5"
+        return ip(10, int(team_str[:2]), int(team_str[2:]), 5)
     else:  # 5 digits
-        return f"10.{team_str[:3]}.{team_str[3:]}.5"
+        return ip(10, int(team_str[:3]), int(team_str[3:]), 5)
+    
+
+class ip:
+    def __init__(self, a:int, b:int, c:int, d:int):
+        """
+        Initializes an IP address.
+        """
+        if not (0 <= a <= 255 and 0 <= b <= 255 and 0 <= c <= 255 and 0 <= d <= 255):
+            raise ValueError(f"Invalid IP address: {a}.{b}.{c}.{d}")
+        return f"{a}.{b}.{c}.{d}"
