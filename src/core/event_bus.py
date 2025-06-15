@@ -5,9 +5,12 @@ from typing import Callable, Dict, Any, List, Optional
 from queue import Queue, Empty
 import time
 
+from tools.terminal.decorators import system_run
+
 logger = logging.getLogger("event_bus")
 
 class EventBus:
+    @system_run
     def __init__(self):
         self._subscribers: Dict[str, List[Callable[[Any], None]]] = defaultdict(list)
         self._queue: Queue = Queue()
@@ -16,6 +19,7 @@ class EventBus:
         self._running = False
         self._thread = None
 
+    @system_run
     def subscribe(self, event_type: str, callback: Callable[[Any], None]):
         """
         Register a callback for a specific event type.
@@ -25,6 +29,22 @@ class EventBus:
             logger.debug(f"Subscribed to {event_type}: {callback.__name__}")
             self._subscribers[event_type].append(callback)
 
+    def unsubscribe(self, event_type: str, callback: Callable[[Any], None]):
+        """
+        Unregister a callback for a specific event type.
+        Thread-safe.
+        """
+        with self._lock:
+            if event_type in self._subscribers:
+                try:
+                    self._subscribers[event_type].remove(callback)
+                    logger.debug(f"Unsubscribed from {event_type}: {callback.__name__}")
+                except ValueError:
+                    logger.warning(f"Callback {callback.__name__} not found for event {event_type}")
+            else:
+                logger.warning(f"No subscribers for event: {event_type}")
+
+    @system_run
     def emit(self, event_type: str, data: dict = None):
         """
         Emit an event to all subscribers.
@@ -35,6 +55,7 @@ class EventBus:
         with self._condition:
             self._condition.notify_all()
 
+    @system_run
     def run(self):
         """
         Starts the event loop in a dedicated thread.
@@ -49,6 +70,7 @@ class EventBus:
         self._thread.start()
         logger.info("EventBus thread started")
 
+    @system_run
     def _run_loop(self):
         while self._running:
             try:
@@ -69,6 +91,7 @@ class EventBus:
                 except Exception as e:
                     logger.error(f"Error in callback for {event_type}: {e}")
 
+    @system_run
     def wait_for(self, event_type: str, check: Callable[[Any], bool] = lambda _: True, timeout: float = None) -> Optional[Any]:
         """
         Waits for a specific event to occur that passes the check function.
@@ -99,6 +122,7 @@ class EventBus:
             logger.warning(f"Timeout waiting for event: {event_type}")
         return result[0]
 
+    @system_run
     def stop(self):
         """
         Stops the event loop.

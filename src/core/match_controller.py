@@ -3,26 +3,29 @@ import time
 import threading
 
 from core.state_store import States
-
+from tools.terminal.decorators import user_run
 
 logger = logging.getLogger("match_controller")
 
 
 class MatchController:
+    @user_run
     def __init__(self, fms):
         self.fms = fms
         self.number = self.fms.state_store.state["match"]["number"]
         self.teams = self.fms.state_store.state["teams"].keys()
         self.progression = self.fms.state_store.state["match"]["progression"]
 
-    def start_match(self):
+    @user_run
+    def start_match(self, instance_id: int | None = None):
         threading.Thread(target=self._start_match).start()
         logger.debug("Match started")
         # Emit event to start match
         self.fms.event_bus.emit("match_started", {"number": self.number, "teams": self.teams})
         # Wait for match to finish
 
-    def _start_match(self):
+    @user_run
+    def _start_match(self, instance_id: int | None = None):
         if self.fms.state_store.get_state() != States.MATCH_PRE:
             logger.error("Match cannot be started, not in MATCH_PRE state")
             self.fms.event_bus.emit("match_error", {"error": "Match cannot be started, not in MATCH_PRE state"})
@@ -34,7 +37,6 @@ class MatchController:
             self.fms.state_store.state["match"]["time_left"] = expected_duration
 
             logger.info(f"Setting state to {pose[0]} with duration {expected_duration:.2f}s")
-            
             # Special handling for MATCH_POST
             if self.fms.state_store.get_state() == States.MATCH_POST:
                 logger.debug("Match is in post phase, waiting for user input")
@@ -65,12 +67,10 @@ class MatchController:
             # State mismatch check
             if self.fms.state_store.get_state() != pose[0]:
                 logger.error(f"State mismatch: {self.fms.state_store.get_state()} != {pose[0]}")
-                self._handle_state_mismatch()
+                self._handle_state_mismatch(instance_id)
 
-        
-        
-
-    def _handle_state_mismatch(self):
+    @user_run
+    def _handle_state_mismatch(self, instance_id: int | None = None):
         if self.fms.state_store.get_state() == States.MATCH_ABORT_OR_ESTOP:
             logger.error("Match aborted or field estop triggered")
         elif self.fms.state_store.get_state() == States.CRASHED:

@@ -1,7 +1,8 @@
 from netmiko import ConnectHandler
-
+from tools.terminal.decorators import user_run, system_run
 
 class SwitchConfig:
+    @system_run
     def __init__(self, config_file: str):
         self.config_file = config_file
 
@@ -11,6 +12,7 @@ class SwitchConfig:
             self.lines.append(line)
         ...
 
+    @system_run
     def parse_config(self, fms):
         """
         Syntax:
@@ -40,6 +42,7 @@ class SwitchConfig:
 
         return ''.join(parsed_lines)
     
+    @system_run
     def _parse_line(self, line: str, fms):
         """
         Parses a single line, replacing tokens with actual values from the fms object.
@@ -52,6 +55,7 @@ class SwitchConfig:
         import re
 
         # First handle <$...> tokens
+        @system_run
         def parse_mode_token(match):
             token = match.group(1)
             if token.startswith('mode='):
@@ -67,6 +71,7 @@ class SwitchConfig:
         line = re.sub(r'<\$(.*?)>', parse_mode_token, line)
 
         # Next handle <&...> tokens
+        @system_run
         def parse_data_token(match):
             token = match.group(1)
             if '@' not in token:
@@ -101,6 +106,7 @@ class SwitchConfig:
 
         return line
     
+    @system_run
     def write_to_switch(self, ip: str, username: str, password: str):
         device = {
             'device_type': 'cisco_ios',

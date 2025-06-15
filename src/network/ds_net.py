@@ -1,5 +1,6 @@
 from enum import Enum
 import datetime
+from tools.terminal.decorators import user_run, system_run
 
 
 class Station(Enum):
@@ -24,6 +25,7 @@ class DriverStationMatchType(Enum):
 
 
 class UDPDriverStationPacket:
+    @system_run
     def __init__(self):
 
         # Create basic fields to be filled before sending
@@ -43,6 +45,7 @@ class UDPDriverStationPacket:
         self.repeat_number:int = None
         self.time_left:int = None
 
+    @system_run
     def get(self):
         packet = bytearray(22)
 

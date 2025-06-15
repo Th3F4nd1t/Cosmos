@@ -1,3 +1,6 @@
+from tools.terminal.decorators import user_run, system_run
+
+@system_run
 def driverstation_ip(team: int) -> str:
     """
     Returns the Driver Station IP for a given FRC team number.
@@ -26,6 +29,7 @@ def driverstation_ip(team: int) -> str:
     
 
 class ip:
+    @system_run
     def __init__(self, a:int, b:int, c:int, d:int):
         """
         Initializes an IP address.
@@ -34,5 +38,6 @@ class ip:
             raise ValueError(f"Invalid IP address: {a}.{b}.{c}.{d}")
         self.ip = f"{a}.{b}.{c}.{d}"
 
+    @system_run
     def get(self) -> str:
         return self.ip

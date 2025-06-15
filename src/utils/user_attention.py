@@ -1,8 +1,13 @@
+from tools.terminal.decorators import user_run, system_run
+
+
 class UserAttentionQueue:
+    @system_run
     def __init__(self):
         self.queue = []
         self.last_idn = 0
 
+    @system_run
     def force_add(self, item:str, options:list[str]|None = None) -> int:
         """
         Options should be a list of strings, the response will be the index of the selected option or if no options are provided, then a string response will be given.
@@ -12,6 +17,7 @@ class UserAttentionQueue:
         self.queue.sort(key=lambda x: x[2], reverse=True)
         return self.last_idn
     
+    @system_run
     def add(self, item:str, options:list[str]|None = None) -> int:
         """
         Adds an item to the queue and returns the idn if the item is not already in the queue. Based on item text.
@@ -22,6 +28,7 @@ class UserAttentionQueue:
         
         return self.force_add(item, options)
     
+    @system_run
     def get(self, idn:int = None) -> tuple|None:
         if idn is not None:
             for item in self.queue:
@@ -34,12 +41,14 @@ class UserAttentionQueue:
             
         return None
     
+    @system_run
     def get_all(self) -> list:
         """
         Returns all items in the queue.
         """
         return self.queue
-    
+
+    @system_run
     def remove(self, idn:int) -> bool:
         for item in self.queue:
             if item[2] == idn:
@@ -47,6 +56,7 @@ class UserAttentionQueue:
                 return True
         return False
 
+    @system_run
     def set_response(self, idn:int, response:int|str) -> bool:
         for item in self.queue:
             if item[2] == idn:

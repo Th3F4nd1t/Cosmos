@@ -33,9 +33,11 @@ class FMS:
         # init event bus
         self.event_bus = EventBus()
         threading.Thread(target=self.event_bus.run, daemon=True).start()
+        self.event_bus.emit("info", {"message": "Event bus started"})
 
         # create user attention queue
         self.user_attention = UserAttentionQueue()
+        self.event_bus.emit("info", {"message": "User attention queue created"})
 
         # spawn console user attention handler
         self._user_attention_thread = threading.Thread(target=self.shell, daemon=True)
@@ -71,6 +73,13 @@ class FMS:
     #     # TODO: make api, no ui, with authentication
 
     #     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+
+    def emit(self, event_type: str, data: dict = None):
+        """
+        Emit an event to the bus.
+        Thread-safe.
+        """
+        self.event_bus.emit(event_type, data)
 
     def _user_attention_handler(self, ctx):
         item:tuple[str, list[str], int, int] | None = self.user_attention.get()
