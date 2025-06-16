@@ -27,6 +27,18 @@ class EventBus:
         """
         with self._lock:
             logger.debug(f"Subscribed to {event_type}: {callback.__name__}")
+            if event_type == "*":
+                # Special case for wildcard subscription
+                for key in self._subscribers:
+                    if callback not in self._subscribers[key]:
+                        self._subscribers[key].append(callback)
+                return
+
+            if event_type not in self._subscribers:
+                self._subscribers[event_type] = []
+            if callback in self._subscribers[event_type]:
+                logger.warning(f"Callback {callback.__name__} already subscribed to event {event_type}")
+                return
             self._subscribers[event_type].append(callback)
 
     def unsubscribe(self, event_type: str, callback: Callable[[Any], None]):

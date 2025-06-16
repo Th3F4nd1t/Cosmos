@@ -10,8 +10,9 @@ logger = logging.getLogger("match_controller")
 
 class MatchController:
     @user_run
-    def __init__(self, fms):
+    def __init__(self, fms, instance_id: int | None = None):
         self.fms = fms
+        self.instance_id = instance_id
         self.number = self.fms.state_store.state["match"]["number"]
         self.teams = self.fms.state_store.state["teams"].keys()
         self.progression = self.fms.state_store.state["match"]["progression"]

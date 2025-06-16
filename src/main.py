@@ -15,6 +15,7 @@ from utils.config_loader import load_config
 from utils.user_attention import UserAttentionQueue
 from core.station_manager import StationManager
 from utils.teams import TeamsManager
+from tools.event_bus_viewer import event_bus_viewer
 # Start station managers, PLC  handler, etc
 # Launch networkhandler
 # launch api server
@@ -33,37 +34,45 @@ class FMS:
         # init event bus
         self.event_bus = EventBus()
         threading.Thread(target=self.event_bus.run, daemon=True).start()
-        self.event_bus.emit("info", {"message": "Event bus started"})
+        # start viewer
+        threading.Thread(target=event_bus_viewer, args=(self.event_bus,), daemon=True).start()
+        self.emit("info", {"message": "Event bus started"})
 
         # create user attention queue
         self.user_attention = UserAttentionQueue()
-        self.event_bus.emit("info", {"message": "User attention queue created"})
+        self.emit("info", {"message": "User attention queue created"})
 
         # spawn console user attention handler
-        self._user_attention_thread = threading.Thread(target=self.shell, daemon=True)
-        self._user_attention_thread.start()
+        # self._user_attention_thread = threading.Thread(target=self.shell, daemon=True)
+        # self._user_attention_thread.start()
+        # self.emit("info", {"message": "User attention handler started"})
 
         # create state store
         self.state_store = StateStore()
+        self.emit("info", {"message": "State store created"})
 
         # spawn state handler
         self._state_handler_thread = threading.Thread(target=self.state_handler, daemon=True)
         self._state_handler_thread.start()
+        self.emit("info", {"message": "State handler started"})
 
         # Start web server
         # self._web_server_thread = threading.Thread(target=self._web_server, daemon=True)
         # self._web_server_thread.start()
+        # self.event_bus.emit("info", {"message": "Web server started"})
 
         # Station handler
         self._station_handler = StationManager(self)
         self._station_handler_thread = threading.Thread(target=self._station_handler.run, daemon=True)
         self._station_handler_thread.start()
+        self.emit("info", {"message": "Station handler started"})
 
 
         # Remote shell handler
         self.shell_handler = ShellHandler(self)
         self._remote_shell_thread = threading.Thread(target=self._remote_shell_handler, daemon=True)
         self._remote_shell_thread.start()
+        self.emit("info", {"message": "Remote shell handler started"})
 
 
     # def _web_server(self):
