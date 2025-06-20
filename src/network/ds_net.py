@@ -45,6 +45,11 @@ class UDPDriverStationPacket:
         self.repeat_number:int = None
         self.time_left:int = None
 
+        # added by Ethen for "TCPDriverStationPacket"
+
+        self.brownout:bool = None
+        self.watchdog:bool = None
+
     @system_run
     def get(self):
         packet = bytearray(22)
@@ -99,10 +104,46 @@ class UDPDriverStationPacket:
         return packet
     
 class TCPFMSPacket:
-    def get(srlf):
+    @system_run
 
 class TCPDriverStationPacket:
-    def get(self):
+    @system_run
+    def __init__(self):
+        
+        # Create basic fields to be filled before sending
+        self.team_number:int = None
+        self.station:Station = None
+        
+        self.packet_number:int = None
+
+        self.isEstop:bool = None
+        self.isAstop:bool = None
+        self.isEnabled:bool = None
+
+        self.mode:DriverStationMode = None
+
+        self.match_type:DriverStationMatchType = None
+        self.match_number:int = None
+        self.repeat_number:int = None
+        self.time_left:int = None
+
+    @system_run
+    def get (self):
+        packet = bytearray(22)
+
+        packet[0] = (self.packet_number >> 8) & 0xFF
+        packet[1] = self.packet_number & 0xFF
+
+        # Comm version
+            # I dont know what to do with this
+
+        # Control/status byte
+        packet[3] = 0X00
+        if self
+
+        
+
+
 
 class UDPFMSPacket:
-    get (self):
+    @system_run
