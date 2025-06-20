@@ -103,10 +103,10 @@ class UDPDriverStationPacket:
 
         return packet
     
-class TCPFMSPacket:
+class TCPDriverStationPacket:
     @system_run
 
-class TCPDriverStationPacket:
+class TCPFMSPacket:
     @system_run
     def __init__(self):
         
