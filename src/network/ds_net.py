@@ -1,4 +1,5 @@
 from enum import Enum
+from network.tags import Tags, WPILibVersion
 import datetime
 from tools.terminal.decorators import user_run, system_run
 
@@ -23,9 +24,7 @@ class DriverStationMatchType(Enum):
     PLAYOFF = 0x03
 
 
-
 class UDPDriverStationPacket:
-    @system_run
     def __init__(self):
 
         # Create basic fields to be filled before sending
@@ -45,12 +44,6 @@ class UDPDriverStationPacket:
         self.repeat_number:int = None
         self.time_left:int = None
 
-        # added by Ethen for "TCPDriverStationPacket"
-
-        self.brownout:bool = None
-        self.watchdog:bool = None
-
-    @system_run
     def get(self):
         packet = bytearray(22)
 
@@ -104,10 +97,9 @@ class UDPDriverStationPacket:
         return packet
     
 class TCPDriverStationPacket:
-    @system_run
+    ...
 
-class TCPFMSPacket:
-    @system_run
+class UDPFMSPacket:
     def __init__(self):
         
         # Create basic fields to be filled before sending
@@ -127,7 +119,6 @@ class TCPFMSPacket:
         self.repeat_number:int = None
         self.time_left:int = None
 
-    @system_run
     def get (self):
         packet = bytearray(22)
 
@@ -145,5 +136,5 @@ class TCPFMSPacket:
 
 
 
-class UDPFMSPacket:
-    @system_run
+class TCPFMSPacket:
+    ...

@@ -1,9 +1,6 @@
 # this file is meant for tags
 from enum import Enum
 
-class Tags(Enum):
-  WPILIB_VERSION = WPILibVersion
-  ...
 
 class WPILibVersion:
   class Status(Enum):
@@ -16,7 +13,10 @@ class WPILibVersion:
     self.version:str = None
   ...
 
-
+class Tags(Enum):
+  WPILIB_VERSION = WPILibVersion
+  ...
+  
 """
 In ds_net.py call from the Tags enum like this:
 
