@@ -97,3 +97,12 @@ class UDPDriverStationPacket:
         packet[21] = bytes(int(self.time_left))[0]
 
         return packet
+    
+class TCPFMSPacket:
+    def get(srlf):
+
+class TCPDriverStationPacket:
+    def get(self):
+
+class UDPFMSPacket:
+    get (self):
