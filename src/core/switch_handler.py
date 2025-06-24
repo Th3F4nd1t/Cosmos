@@ -2,7 +2,7 @@ from enum import Enum
 import logging
 from netmiko import ConnectHandler
 
-logger = logging.getLogger("switch_handler")
+# logger = logging.getLogger("switch_handler")
 
 class SwitchConfig:
     def __init__(self, config: dict, metadata: dict):

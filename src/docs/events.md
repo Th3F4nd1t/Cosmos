@@ -1,5 +1,7 @@
 Events will be published to the event bus with a string event type and a dictionary data payload.
 Valid event types and associated data payloads are found in the below tables seperated by class of event, which generally corrospond to the file or class from which they originate.
+<br>
+Event enums are found in [`core.eventbus.events`](https://github.com/Th3F4nd1t/Cosmos/tree/main/src/core/eventbus/events.py)
 
 #### General Events
 | Event Type      | Data Payload                                      |
@@ -28,9 +30,9 @@ Valid event types and associated data payloads are found in the below tables sep
 #### Robot Events
 | Event Type      | Data Payload                                      |
 |------------------|---------------------------------------------------|
-| `field_estop`       | `{ "reason": <reason:str> }` |
-| `robot_estop`       | `{ "team_number": <team_number:int>, "reason": <reason:str> }` |
-| `robot_astop`      | `{ "team_number": <robot_team_numberid:int>, "reason": <reason:str> }` |
+| `field_estop`       | `{ "active": <active:bool>, "reason": <reason:str> }` |
+| `robot_estop`       | `{ "active": <active:bool>, "team_number": <team_number:int>, "reason": <reason:str> }` |
+| `robot_astop`      | `{ "active": <active:bool>, "team_number": <robot_team_numberid:int>, "reason": <reason:str> }` |
 | `robot_controller_connected`   | `{ "team_number": <team_number:int> }` |
 | `robot_controller_disconnected`| `{ "team_number": <team_number:int> }` |
 | `robot_controller_error`       | `{ "team_number": <team_number:int>, "error": <error_message:str> }` |

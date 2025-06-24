@@ -1,5 +1,5 @@
 import time
-from core.event_bus import EventBus
+from core.eventbus.event_bus import EventBus
 
 
 def event_bus_viewer(event_bus: EventBus):

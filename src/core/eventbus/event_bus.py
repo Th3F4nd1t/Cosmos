@@ -4,10 +4,11 @@ from collections import defaultdict
 from typing import Callable, Dict, Any, List, Optional
 from queue import Queue, Empty
 import time
+from core.eventbus.events import GeneralEvent, EventBusEvent, MatchEvent, RobotEvent, PLCEvent, StateEvent, SwitchEvent, TeamEvent, UserAttentionEvent, TerminalEvent
 
 from tools.terminal.decorators import system_run
 
-logger = logging.getLogger("event_bus")
+# logger = logging.getLogger("event_bus")
 
 class EventBus:
     @system_run
@@ -20,7 +21,7 @@ class EventBus:
         self._thread = None
 
     @system_run
-    def subscribe(self, event_type: str, callback: Callable[[Any], None]):
+    def subscribe(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, callback: Callable[[Any], None]):
         """
         Register a callback for a specific event type.
         Thread-safe.
@@ -41,7 +42,7 @@ class EventBus:
                 return
             self._subscribers[event_type].append(callback)
 
-    def unsubscribe(self, event_type: str, callback: Callable[[Any], None]):
+    def unsubscribe(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, callback: Callable[[Any], None]):
         """
         Unregister a callback for a specific event type.
         Thread-safe.
@@ -57,7 +58,7 @@ class EventBus:
                 logger.warning(f"No subscribers for event: {event_type}")
 
     @system_run
-    def emit(self, event_type: str, data: dict = None):
+    def emit(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, data: dict = None):
         """
         Emit an event to all subscribers.
         Thread-safe.
@@ -104,7 +105,7 @@ class EventBus:
                     logger.error(f"Error in callback for {event_type}: {e}")
 
     @system_run
-    def wait_for(self, event_type: str, check: Callable[[Any], bool] = lambda _: True, timeout: float = None) -> Optional[Any]:
+    def wait_for(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, check: Callable[[Any], bool] = lambda _: True, timeout: float = None) -> Optional[Any]:
         """
         Waits for a specific event to occur that passes the check function.
         Blocks the calling thread.

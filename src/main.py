@@ -5,7 +5,7 @@ import time
 import traceback
 # from flask import Flask, request
 
-from core.event_bus import EventBus
+from core.eventbus.event_bus import EventBus
 from core.match_controller import MatchController
 from core.state_store import StateStore, States
 from core.plc_handler import PLCHandler
@@ -20,8 +20,8 @@ from tools.event_bus_viewer import event_bus_viewer
 # Launch networkhandler
 # launch api server
 
-logger = logging.getLogger("fms")
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# logger = logging.getLogger("fms")
+# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 
 class FMS:

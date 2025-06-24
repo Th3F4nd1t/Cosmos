@@ -130,7 +130,7 @@ class UDPFMSPacket:
 
         # Control/status byte
         packet[3] = 0X00
-        if self
+        ...
 
         
 

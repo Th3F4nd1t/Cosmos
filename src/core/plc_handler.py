@@ -3,7 +3,7 @@ import requests
 import logging
 
 
-logger = logging.getLogger("plc_handler")
+# logger = logging.getLogger("plc_handler")
 
 
 class PLCHandler:
@@ -31,10 +31,11 @@ class PLCHandler:
         FIELD = 0
 
 
-    def __init__(self, ip:str, username:str = "plc", password:str = "c0sm0splc"):
+    def __init__(self, fms, ip:str, username:str = "plc", password:str = "c0sm0splc"):
         """
         Initialize the PLCHandler with the PLC's IP address.
         """
+        self.fms = fms
         self.ip = str(ip)
         self.username = username
         self.password = password
@@ -58,8 +59,17 @@ class PLCHandler:
         try:
             response = requests.post(endpoint, json={"color": color.value})
             response.raise_for_status()  # Raise an error for bad responses
+            self.fms.event_bus.emit("plc_light_set", {
+                "station": station.name,
+                "color": color.name
+            })
         except requests.RequestException as e:
-            logger.error(f"Failed to set light color for station {station.name} to {color.name}: {e}")
+            # logger.error(f"Failed to set light color for station {station.name} to {color.name}: {e}")
+            self.fms.event_bus.emit("plc_error", {
+                "station": station.name,
+                "color": color.name,
+                "error": str(e)
+            })
             raise
 
     def set_light_color_alliance(self, color:LightColor):
@@ -80,7 +90,11 @@ class PLCHandler:
             response = requests.post(endpoint, json={"number": number})
             response.raise_for_status()  # Raise an error for bad responses
         except requests.RequestException as e:
-            logger.error(f"Failed to set number for station {station.name} for team number {number}: {e}")
+            # logger.error(f"Failed to set number for station {station.name} for team number {number}: {e}")
+            self.fms.event_bus.emit("plc_number_error", {
+                "station": station.name,
+                "error": str(e)
+            })
             raise
 
     def get_estop(self, station:Station) -> bool:
@@ -96,7 +110,10 @@ class PLCHandler:
             response.raise_for_status()  # Raise an error for bad responses
             return response.json().get("estop", False)  # Assuming the PLC returns a JSON with "estop" key
         except requests.RequestException as e:
-            logger.error(f"Failed to get E-Stop status for station {station.name}: {e}")
+            # logger.error(f"Failed to get E-Stop status for station {station.name}: {e}")
+            self.fms.event_bus.emit("error", {
+                "error": f"Failed to get E-Stop status for station {station.name}: {e}"
+            })
             raise
 
     def get_astop(self, station:Station) -> bool:

@@ -5,7 +5,7 @@ import threading
 from core.state_store import States
 from tools.terminal.decorators import user_run
 
-logger = logging.getLogger("match_controller")
+# logger = logging.getLogger("match_controller")
 
 
 class MatchController:
