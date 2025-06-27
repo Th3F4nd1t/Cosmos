@@ -39,6 +39,7 @@ class MatchEvent(_EventEnum):
     PRESTARTED = ("match_prestarted", lambda payload: isinstance(payload, dict) and isinstance(payload.get("match_number"), int) and isinstance(payload.get("teams"), list) and all(isinstance(team, (int, None)) for team in payload.get("teams", [])))
     STARTED = ("match_started", lambda payload: isinstance(payload, dict) and isinstance(payload.get("match_number"), int) and isinstance(payload.get("teams"), list) and all(isinstance(team, (int, None)) for team in payload.get("teams", [])))
     PROGRESS = ("match_progress", lambda payload: isinstance(payload, dict) and isinstance(payload.get("match_number"), int) and isinstance(payload.get("progression"), str))
+    GREENLIGHT = ("match_greenlight", lambda payload: isinstance(payload, dict) and isinstance(payload.get("match_number"), int))
     ENDED = ("match_ended", lambda payload: isinstance(payload, dict) and isinstance(payload.get("match_number"), int) and isinstance(payload.get("teams"), list) and all(isinstance(team, (int, None)) for team in payload.get("teams", [])))
     ERROR = ("match_error", lambda payload: isinstance(payload, dict) and isinstance(payload.get("error"), str))
 

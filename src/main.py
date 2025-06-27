@@ -6,6 +6,7 @@ import traceback
 # from flask import Flask, request
 
 from core.eventbus.event_bus import EventBus
+from core.eventbus.events import GeneralEvent, _EventEnum
 from core.match_controller import MatchController
 from core.state_store import StateStore, States
 from core.plc_handler import PLCHandler
@@ -83,7 +84,7 @@ class FMS:
 
     #     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 
-    def emit(self, event_type: str, data: dict = None):
+    def emit(self, event_type: _EventEnum, data: dict = None):
         """
         Emit an event to the bus.
         Thread-safe.
