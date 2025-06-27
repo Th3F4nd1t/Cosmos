@@ -30,6 +30,7 @@ class GeneralEvent(_EventEnum):
 class EventBusEvent(_EventEnum):
     SUBSCRIBED = ("eventbus_subscribed", lambda payload: isinstance(payload, dict) and isinstance(payload.get("event_type"), str) and isinstance(payload.get("callback"), str))
     UNSUBSCRIBED = ("eventbus_unsubscribed", lambda payload: isinstance(payload, dict) and isinstance(payload.get("event_type"), str) and isinstance(payload.get("callback"), str))
+    WARNING = ("eventbus_warning", lambda payload: isinstance(payload, dict) and isinstance(payload.get("warning"), str))
     ERROR = ("eventbus_error", lambda payload: isinstance(payload, dict) and isinstance(payload.get("error"), str))
 
 

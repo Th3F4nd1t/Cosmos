@@ -16,6 +16,7 @@ Event enums are found in [`core.eventbus.events`](https://github.com/Th3F4nd1t/C
 |------------------|---------------------------------------------------|
 | `eventbus_subscribed` | `{ "event_type": <event_type:str>, "callback": <callback:str> }` |
 | `eventbus_unsubscribed` | `{ "event_type": <event_type:str>, "callback": <callback:str> }` |
+| `eventbus_warning` | `{ "warning": <warning_message:str> }` |
 | `eventbus_error` | `{ "error": <error_message:str> }`                       |
 
 #### Match Events
