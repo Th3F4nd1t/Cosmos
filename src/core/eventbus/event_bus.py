@@ -146,3 +146,19 @@ class EventBus:
         """
         self._running = False
         self.emit(GeneralEvent.INFO, {"message": "EventBus stopped"})
+
+    def get_last_event(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent|None = None) -> Optional[dict]:
+        """
+        Returns the last event data for a specific event type. If no event type is provided, returns the last event data for any event type.
+        Event is a tuple of (event_type, data).
+        """
+        with self._lock:
+            if event_type is None:
+                if not self._queue.empty():
+                    return self._queue.queue[-1][1]
+                return None
+
+            for event in reversed(self._queue.queue):
+                if event[0] == event_type:
+                    return event[1]
+            return None

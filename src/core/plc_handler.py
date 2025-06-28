@@ -1,7 +1,7 @@
 from enum import Enum
 import requests
 import logging
-
+from core.eventbus.events import PLCEvent, GeneralEvent
 
 # logger = logging.getLogger("plc_handler")
 
@@ -25,10 +25,10 @@ class PLCHandler:
         BLUE = 5 # blue alliance
 
     class Station(Enum):
-        LEFT = 0
-        CENTER = 1
-        RIGHT = 2
-        FIELD = 0
+        LEFT = "left"
+        CENTER = "center"
+        RIGHT = "right"
+        ALL = "all"
 
 
     def __init__(self, fms, ip:str, username:str = "plc", password:str = "c0sm0splc"):
@@ -44,7 +44,13 @@ class PLCHandler:
         """
         Using SSH, start the remote server on the PLC.
         """
-        ...
+        self.fms.emit(PLCEvent.REMOTE_SERVER_STARTED, {"station": self.Station.ALL, "ip": self.ip})
+
+    def stop_remote_server(self):
+        """
+        Using SSH, stop the remote server on the PLC.
+        """
+        self.fms.emit(PLCEvent.REMOTE_SERVER_STOPPED, {"station": self.Station.ALL, "ip": self.ip})
 
 
     def set_light_color(self, station:Station, color:LightColor):
@@ -59,13 +65,13 @@ class PLCHandler:
         try:
             response = requests.post(endpoint, json={"color": color.value})
             response.raise_for_status()  # Raise an error for bad responses
-            self.fms.event_bus.emit("plc_light_set", {
+            self.fms.emit(PLCEvent.LIGHT_SET, {
                 "station": station.name,
                 "color": color.name
             })
         except requests.RequestException as e:
             # logger.error(f"Failed to set light color for station {station.name} to {color.name}: {e}")
-            self.fms.event_bus.emit("plc_error", {
+            self.fms.emit(PLCEvent.ERROR, {
                 "station": station.name,
                 "color": color.name,
                 "error": str(e)

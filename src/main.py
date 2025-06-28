@@ -6,7 +6,7 @@ import traceback
 # from flask import Flask, request
 
 from core.eventbus.event_bus import EventBus
-from core.eventbus.events import GeneralEvent, _EventEnum
+from core.eventbus.events import *
 from core.match_controller import MatchController
 from core.state_store import StateStore, States
 from core.plc_handler import PLCHandler
@@ -76,6 +76,14 @@ class FMS:
         self.emit("info", {"message": "Remote shell handler started"})
 
 
+    def attach_subscribers(self):
+        """
+        Attach subscribers to the event bus.
+        This is where you can add your event handlers.
+        """
+        self.event_bus.subscribe(RobotEvent.FIELD_ESTOP, self.field_estop_handler)
+
+
     # def _web_server(self):
     #     # flask API server
     #     app = Flask("COSMOS-API")
@@ -84,7 +92,7 @@ class FMS:
 
     #     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 
-    def emit(self, event_type: _EventEnum, data: dict = None):
+    def emit(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, data: dict = None):
         """
         Emit an event to the bus.
         Thread-safe.
@@ -540,6 +548,40 @@ class FMS:
                 self.exception_queue.insert(0, (e, str(e.__traceback__)))
                 self.state_store.set_state(States.CRASHED)
                 logger.error("State handler crashed, setting state to CRASHED")
+
+
+    def field_estop_handler(self):
+        """
+        This function will be run when the field estop is activated.
+        """
+        # Get E-stop from event bus
+        estop_event = self.event_bus.get_last_event(RobotEvent.FIELD_ESTOP)
+        if estop_event:
+            if estop_event[1].get("active"):
+                self.emit(TerminalEvent.BROADCAST, {
+                    "message": f"Field estopped with reason: {estop_event[1].get('reason', 'No reason provided')}",
+                    "level": "warning"
+                    })
+                
+                # TODO: Implement robot estop logic
+                
+                self.red_plc.set_light_color_alliance(PLCHandler.LightColor.ESTOP)
+                self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.ESTOP)
+            
+            else:
+                self.emit(TerminalEvent.BROADCAST, {
+                    "message": f"Field estop deactivated with reason: {estop_event[1].get('reason', 'No reason provided')}",
+                    "level": "info"
+                    })
+                self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
+                self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
+
+        else:
+            self.emit(TerminalEvent.BROADCAST, {
+                "message": "Field estop activated but not found in bus. CRITICAL ERROR, SOMETHING IS BEYOND BROKEN.",
+                "level": "error"
+                })
+        
 
 
 if __name__ == "__main__":
