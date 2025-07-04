@@ -17,6 +17,21 @@ class Tags(Enum):
   WPILIB_VERSION = WPILibVersion
   ...
   
+class RIOVersion:
+  class Status (Enum):
+    BAD = "<bad>"
+    GOOD = "<good>"
+    PREFERRFED = "preferred>"
+
+    def __init__(self):
+      super().__init__()
+      self.status:str = None
+      sekf.version:str = None
+      ...
+  class Tags(Enum):
+    RIO_VERSION = RIOVersion
+    ...
+
 """
 In ds_net.py call from the Tags enum like this:
 
