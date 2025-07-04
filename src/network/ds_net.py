@@ -1,5 +1,5 @@
 from enum import Enum
-from network.tags import Tags, WPILibVersion
+from network.tags import Tags, WPILibVersion, RIOVersion
 import datetime
 from tools.terminal.decorators import user_run, system_run
 
