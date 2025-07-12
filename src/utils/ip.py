@@ -1,8 +1,6 @@
 from enum import Enum
-from tools.terminal.decorators import user_run, system_run
 
-@system_run
-def driverstation_ip(team: int) -> str:
+def team_ip(team: int, end:int) -> str:
     """
     Returns the Driver Station IP for a given FRC team number.
     Format depends on number of digits in the team number.
@@ -20,17 +18,18 @@ def driverstation_ip(team: int) -> str:
 
 
     if team < 100:  # 1 or 2 digits
-        return ip(10, 0, team, 5)
+        return ip(10, 0, team, end).get()
     elif team < 1000:  # 3 digits
-        return ip(10, int(team_str[0]), int(team_str[1:]), 5)
+        return ip(10, int(team_str[0]), int(team_str[1:]), end).get()
     elif team < 10000:  # 4 digits
-        return ip(10, int(team_str[:2]), int(team_str[2:]), 5)
+        return ip(10, int(team_str[:2]), int(team_str[2:]), end).get()
     else:  # 5 digits
-        return ip(10, int(team_str[:3]), int(team_str[3:]), 5)
-    
+        return ip(10, int(team_str[:3]), int(team_str[3:]), end).get()
+
+def driverstation_ip(team: int) -> str:
+    return team_ip(team, 5)
 
 class ip:
-    @system_run
     def __init__(self, a:int, b:int, c:int, d:int):
         """
         Initializes an IP address.
@@ -39,7 +38,6 @@ class ip:
             raise ValueError(f"Invalid IP address: {a}.{b}.{c}.{d}")
         self.ip = f"{a}.{b}.{c}.{d}"
 
-    @system_run
     def get(self) -> str:
         return self.ip
     
