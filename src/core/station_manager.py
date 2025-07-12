@@ -5,6 +5,7 @@ import time
 from utils.ip import driverstation_ip
 # from main import FMS
 from network.ds_net import Station, DriverStationMode, DriverStationMatchType, UDPDriverStationPacket
+from core.eventbus.events import GeneralEvent
 
 class StationManager:
     def __init__(self, fms):
@@ -18,13 +19,17 @@ class StationManager:
         self.packet_numbers = [0] * 6  # One for each station
 
         schedule.every(0.5).seconds.do(self._send_udp_update)
+        # schedule.every(1).seconds.do(self.test_emitter)
 
     def run(self):
         # Sending updates and receiving packets should be handled here
         while True:
             schedule.run_pending()
             time.sleep(0.001)
-        
+
+    # def test_emitter(self):
+    #     self.fms.emit(GeneralEvent.INFO, {"message": "Test message from StationManager"})
+
     def _send_udp_update(self):
         """
         Send an update to the driver station via UDP.
@@ -32,7 +37,7 @@ class StationManager:
         # self.fms.network_handler.send_udp
         if self.send_updates:
             # red 1
-            if self.fms.state_store.state["teams"][0]["ds_connected"]:
+            if self.fms.state_store.state["teams"][0]["status"]["ds_connected"]:
                 r1_packet = UDPDriverStationPacket()
 
                 r1_packet.team_number = self.fms.state_store.state["teams"][0].key
@@ -70,7 +75,7 @@ class StationManager:
                 r1_packet.time_left = self.fms.state_store.state["match"]["time_left"]
 
             # red 2
-            if self.fms.state_store.state["teams"][1]["ds_connected"]:
+            if self.fms.state_store.state["teams"][1]["status"]["ds_connected"]:
                 r2_packet = UDPDriverStationPacket()
 
                 r2_packet.team_number = self.fms.state_store.state["teams"][1].key
@@ -108,7 +113,7 @@ class StationManager:
                 r2_packet.time_left = self.fms.state_store.state["match"]["time_left"]
 
             # red 3
-            if self.fms.state_store.state["teams"][2]["ds_connected"]:
+            if self.fms.state_store.state["teams"][2]["status"]["ds_connected"]:
                 r3_packet = UDPDriverStationPacket()
 
                 r3_packet.team_number = self.fms.state_store.state["teams"][2].key
@@ -146,7 +151,7 @@ class StationManager:
                 r3_packet.time_left = self.fms.state_store.state["match"]["time_left"]
 
             # blue 1
-            if self.fms.state_store.state["teams"][3]["ds_connected"]:
+            if self.fms.state_store.state["teams"][3]["status"]["ds_connected"]:
                 b1_packet = UDPDriverStationPacket()
 
                 b1_packet.team_number = self.fms.state_store.state["teams"][3].key
@@ -184,7 +189,7 @@ class StationManager:
                 b1_packet.time_left = self.fms.state_store.state["match"]["time_left"]
 
             # blue 2
-            if self.fms.state_store.state["teams"][4]["ds_connected"]:
+            if self.fms.state_store.state["teams"][4]["status"]["ds_connected"]:
                 b2_packet = UDPDriverStationPacket()
 
                 b2_packet.team_number = self.fms.state_store.state["teams"][4].key
@@ -222,7 +227,7 @@ class StationManager:
                 b2_packet.time_left = self.fms.state_store.state["match"]["time_left"]
 
             # blue 3
-            if self.fms.state_store.state["teams"][5]["ds_connected"]:
+            if self.fms.state_store.state["teams"][5]["status"]["ds_connected"]:
                 b3_packet = UDPDriverStationPacket()
 
                 b3_packet.team_number = self.fms.state_store.state["teams"][5].key
@@ -268,20 +273,20 @@ class StationManager:
             self.packet_numbers[5] += 1
 
             # send the packets
-            if self.fms.state_store.state["teams"][0]["ds_connected"]:
+            if self.fms.state_store.state["teams"][0]["status"]["ds_connected"]:
                 self.fms.network_handler.send_udp(r1_packet.ip, 1121, r1_packet.get())
 
-            if self.fms.state_store.state["teams"][1]["ds_connected"]:
+            if self.fms.state_store.state["teams"][1]["status"]["ds_connected"]:
                 self.fms.network_handler.send_udp(r2_packet.ip, 1121, r2_packet.get())
 
-            if self.fms.state_store.state["teams"][2]["ds_connected"]:
+            if self.fms.state_store.state["teams"][2]["status"]["ds_connected"]:
                 self.fms.network_handler.send_udp(r3_packet.ip, 1121, r3_packet.get())
 
-            if self.fms.state_store.state["teams"][3]["ds_connected"]:
+            if self.fms.state_store.state["teams"][3]["status"]["ds_connected"]:
                 self.fms.network_handler.send_udp(b1_packet.ip, 1121, b1_packet.get())
 
-            if self.fms.state_store.state["teams"][4]["ds_connected"]:
+            if self.fms.state_store.state["teams"][4]["status"]["ds_connected"]:
                 self.fms.network_handler.send_udp(b2_packet.ip, 1121, b2_packet.get())
 
-            if self.fms.state_store.state["teams"][5]["ds_connected"]:
+            if self.fms.state_store.state["teams"][5]["status"]["ds_connected"]:
                 self.fms.network_handler.send_udp(b3_packet.ip, 1121, b3_packet.get())
