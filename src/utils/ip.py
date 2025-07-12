@@ -1,3 +1,4 @@
+from enum import Enum
 from tools.terminal.decorators import user_run, system_run
 
 @system_run
@@ -41,3 +42,15 @@ class ip:
     @system_run
     def get(self) -> str:
         return self.ip
+    
+
+class IP(Enum):
+    RED_PLC = "10.0.100.200"
+    BLUE_PLC = "10.0.100.201"
+    MAIN_PLC = "10.0.100.202"
+
+    RED_SWITCH = "10.0.100.100"
+    BLUE_SWITCH = "10.0.100.101"
+    MAIN_SWITCH = "10.0.100.102"
+
+    
