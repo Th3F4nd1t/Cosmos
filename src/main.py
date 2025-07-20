@@ -21,8 +21,8 @@ from tools.event_bus_viewer import event_bus_viewer
 # Launch networkhandler
 # launch api server
 
-# logger = logging.getLogger("fms")
-# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("fms")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 
 class FMS:
@@ -37,43 +37,43 @@ class FMS:
         threading.Thread(target=self.event_bus.run, daemon=True).start()
         # start viewer
         threading.Thread(target=event_bus_viewer, args=(self.event_bus,), daemon=True).start()
-        self.emit("info", {"message": "Event bus started"})
+        self.emit(GeneralEvent.INFO, {"message": "Event bus started"})
 
         # create user attention queue
         self.user_attention = UserAttentionQueue()
-        self.emit("info", {"message": "User attention queue created"})
+        self.emit(GeneralEvent.INFO, {"message": "User attention queue created"})
 
         # spawn console user attention handler
         # self._user_attention_thread = threading.Thread(target=self.shell, daemon=True)
         # self._user_attention_thread.start()
-        # self.emit("info", {"message": "User attention handler started"})
+        # self.emit(GeneralEvent.INFO, {"message": "User attention handler started"})
 
         # create state store
         self.state_store = StateStore()
-        self.emit("info", {"message": "State store created"})
+        self.emit(GeneralEvent.INFO, {"message": "State store created"})
 
         # spawn state handler
         self._state_handler_thread = threading.Thread(target=self.state_handler, daemon=True)
         self._state_handler_thread.start()
-        self.emit("info", {"message": "State handler started"})
+        self.emit(GeneralEvent.INFO, {"message": "State handler started"})
 
         # Start web server
         # self._web_server_thread = threading.Thread(target=self._web_server, daemon=True)
         # self._web_server_thread.start()
-        # self.event_bus.emit("info", {"message": "Web server started"})
+        # self.event_bus.emit(GeneralEvent.INFO, {"message": "Web server started"})
 
         # Station handler
         self._station_handler = StationManager(self)
         self._station_handler_thread = threading.Thread(target=self._station_handler.run, daemon=True)
         self._station_handler_thread.start()
-        self.emit("info", {"message": "Station handler started"})
+        self.emit(GeneralEvent.INFO, {"message": "Station handler started"})
 
 
         # Remote shell handler
         self.shell_handler = ShellHandler(self)
         self._remote_shell_thread = threading.Thread(target=self._remote_shell_handler, daemon=True)
         self._remote_shell_thread.start()
-        self.emit("info", {"message": "Remote shell handler started"})
+        self.emit(GeneralEvent.INFO, {"message": "Remote shell handler started"})
 
 
     def attach_subscribers(self):
@@ -100,6 +100,10 @@ class FMS:
         self.event_bus.emit(event_type, data)
 
     def _user_attention_handler(self, ctx):
+        """
+        TO BE REMOVED WITH IMPLEMENTATION OF REMOTE CONSOLES AND WEB GUI. (TODO)
+        This function handles user attention requests.
+        """
         item:tuple[str, list[str], int, int] | None = self.user_attention.get()
         if item is not None:
 
@@ -571,7 +575,7 @@ class FMS:
             else:
                 self.emit(TerminalEvent.BROADCAST, {
                     "message": f"Field estop deactivated with reason: {estop_event[1].get('reason', 'No reason provided')}",
-                    "level": "info"
+                    "level": GeneralEvent.INFO
                     })
                 self.red_plc.set_light_color_alliance(PLCHandler.LightColor.RED)
                 self.blue_plc.set_light_color_alliance(PLCHandler.LightColor.BLUE)
