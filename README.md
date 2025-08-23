@@ -94,5 +94,6 @@ Questions? Reach out to me on discord: @thefandit
 - Auto-scoring
 
 ## Development Notes
+(Can ignore these, no longer applicable)
 - Needs to be fully implemented, but all functions should be tagged with either `@user_run` or `@system_run` to indicate whether they should be run by the user or automatically by the system. For all user_run functions, all inputs/outputs should be via the to be implemented remote terminal ID system. For system_run functions, there should be no inputs, and all outputs should be broadcasted to all remote terminals, tagged with a priority level. If said remote terminal is at that level, it will display the broadcast. These system_run function's outputs will also always be logged. User run function's outputs can be logged, but that depends on the function.
 - All functions should be tagged with `@mode` to indicate which mode they are available in.
