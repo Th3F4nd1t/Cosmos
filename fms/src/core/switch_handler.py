@@ -1,7 +1,7 @@
 from enum import Enum
 import logging
 from netmiko import ConnectHandler
-from src.core.eventbus.events import GeneralEvent, SwitchEvent
+from core.eventbus.events import GeneralEvent, SwitchEvent
 
 
 class SwitchConfigMetadata:

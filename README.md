@@ -1,7 +1,11 @@
 # Cosmos FMS
 An unofficial Field Management Software
 <br>
-Questions? Reach out to me on discord: @thefandit
+I have files for specific deployments, but they are not included here **AND ARE REQUIRED FOR PROPER OPERATION**. Please contact me if you want them. Also can contact me for help setting up/finding parts/or really anything.
+<br>
+discord: @thefandit
+<br>
+(For FIRST YPP, you must be under 18 to DM me, otherwise ping me in the FRC discord server: https://discord.gg/frc)
 
 ## Features
 - Multiple [modes](#modes)
@@ -93,7 +97,61 @@ Questions? Reach out to me on discord: @thefandit
 - Logging
 - Auto-scoring
 
-## Development Notes
-(Can ignore these, no longer applicable)
-- Needs to be fully implemented, but all functions should be tagged with either `@user_run` or `@system_run` to indicate whether they should be run by the user or automatically by the system. For all user_run functions, all inputs/outputs should be via the to be implemented remote terminal ID system. For system_run functions, there should be no inputs, and all outputs should be broadcasted to all remote terminals, tagged with a priority level. If said remote terminal is at that level, it will display the broadcast. These system_run function's outputs will also always be logged. User run function's outputs can be logged, but that depends on the function.
-- All functions should be tagged with `@mode` to indicate which mode they are available in.
+
+## Roles
+- Default (D)
+    - Has E-Stop access
+- Team Member (TM)
+    - Can be approved for a specific team by a FH/FM (for a period of time), or permanently by an FA
+    - Can see most information having to do with their team/robot
+    - Has E-Stop access
+- Field Helper (FH)
+    - Can be approved by an FM (for a period of time), or permanently by an FA
+    - Can see most information having to do with the field
+    - Can't change states or settings
+    - Has E-Stop access
+- Field Manager (FM)
+    - Can be approved by an FA
+    - Can start matches
+    - Can go into most required states
+    - Has E-Stop access
+- Field Admin (FA)
+    - Can be approved by an FA
+    - Needed for any development/diagnostics
+    - Can go into all states
+    - Can change all settings
+    - Has E-Stop and A-Stop access
+
+
+## Webserver stack
+- Flask
+- nginx
+- cloudflared
+
+
+## Server files
+- /opt/cosmos/
+    - fms/
+        - src/
+            - fms.py
+        - logs/
+        - webserver/
+            - src/
+                - webserver.py
+            - logs/
+
+- /etc/systemd/system/
+    - cosmos.service
+    - cloudflared.service
+    - webserver.service
+
+- /etc/nginx/sites-available/
+    - cosmos.conf
+
+- /etc/cloudflared/
+    - config.yml
+
+
+## Ports
+- 8080 (webserver traffic)
+- 8090 (webserver/fms socket)

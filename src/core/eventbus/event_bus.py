@@ -4,10 +4,10 @@ from collections import defaultdict
 from typing import Callable, Dict, Any, List, Optional
 from queue import Queue, Empty
 import time
+from core.eventbus.events import GeneralEvent, EventBusEvent, MatchEvent, RobotEvent, PLCEvent, StateEvent, SwitchEvent, TeamEvent, UserAttentionEvent, TerminalEvent
 
 from tools.terminal.decorators import system_run
 
-logger = logging.getLogger("event_bus")
 
 class EventBus:
     @system_run
@@ -18,15 +18,15 @@ class EventBus:
         self._condition = threading.Condition()
         self._running = False
         self._thread = None
-
+        
     @system_run
-    def subscribe(self, event_type: str, callback: Callable[[Any], None]):
+    def subscribe(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, callback: Callable[[Any], None]):
         """
         Register a callback for a specific event type.
         Thread-safe.
         """
         with self._lock:
-            logger.debug(f"Subscribed to {event_type}: {callback.__name__}")
+            self.emit(EventBusEvent.SUBSCRIBED, {"event_type": event_type, "callback": callback.__name__})
             if event_type == "*":
                 # Special case for wildcard subscription
                 for key in self._subscribers:
@@ -37,11 +37,11 @@ class EventBus:
             if event_type not in self._subscribers:
                 self._subscribers[event_type] = []
             if callback in self._subscribers[event_type]:
-                logger.warning(f"Callback {callback.__name__} already subscribed to event {event_type}")
+                self.emit(EventBusEvent.WARNING, {"warning": f"Callback {callback.__name__} already subscribed to event {event_type.name_str}"})
                 return
             self._subscribers[event_type].append(callback)
 
-    def unsubscribe(self, event_type: str, callback: Callable[[Any], None]):
+    def unsubscribe(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, callback: Callable[[Any], None]):
         """
         Unregister a callback for a specific event type.
         Thread-safe.
@@ -50,19 +50,24 @@ class EventBus:
             if event_type in self._subscribers:
                 try:
                     self._subscribers[event_type].remove(callback)
-                    logger.debug(f"Unsubscribed from {event_type}: {callback.__name__}")
+                    self.emit(EventBusEvent.UNSUBSCRIBED, {"event_type": event_type, "callback": callback.__name__})
                 except ValueError:
-                    logger.warning(f"Callback {callback.__name__} not found for event {event_type}")
+                    self.emit(EventBusEvent.WARNING, {"warning": f"Callback {callback.__name__} not found for event {event_type.name_str}"})
             else:
-                logger.warning(f"No subscribers for event: {event_type}")
+                self.emit(EventBusEvent.WARNING, {"warning": f"No subscribers for event: {event_type.name_str}"})
 
     @system_run
-    def emit(self, event_type: str, data: dict = None):
+    def emit(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, data: dict = None):
         """
         Emit an event to all subscribers.
         Thread-safe.
         """
-        logger.debug(f"Emitting event {event_type} with data: {data}")
+
+        # Validate the event type with the payload
+        if not event_type.validate(data):
+            self.emit(EventBusEvent.ERROR, {"error": f"Invalid data for event {event_type.name_str}: {data}"})
+            return
+
         self._queue.put((event_type, data))
         with self._condition:
             self._condition.notify_all()
@@ -74,13 +79,13 @@ class EventBus:
         Call this once.
         """
         if self._running:
-            logger.warning("EventBus is already running")
+            self.emit(EventBusEvent.WARNING, {"warning": "EventBus is already running"})
             return
 
         self._running = True
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
-        logger.info("EventBus thread started")
+        self.emit(GeneralEvent.INFO, {"message": "EventBus started"})
 
     @system_run
     def _run_loop(self):
@@ -94,17 +99,17 @@ class EventBus:
                 callbacks = self._subscribers.get(event_type, [])
 
             if not callbacks:
-                logger.warning(f"No subscribers for event: {event_type}")
+                self.emit(EventBusEvent.WARNING, {"warning": f"No subscribers for event: {event_type.name_str}"})
                 continue
 
             for callback in callbacks:
                 try:
                     callback(data)
                 except Exception as e:
-                    logger.error(f"Error in callback for {event_type}: {e}")
+                    self.emit(EventBusEvent.ERROR, {"error": f"Error in callback for {event_type.name_str}: {e}"})
 
     @system_run
-    def wait_for(self, event_type: str, check: Callable[[Any], bool] = lambda _: True, timeout: float = None) -> Optional[Any]:
+    def wait_for(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, check: Callable[[Any], bool] = lambda _: True, timeout: float = None) -> Optional[Any]:
         """
         Waits for a specific event to occur that passes the check function.
         Blocks the calling thread.
@@ -131,7 +136,7 @@ class EventBus:
                 self._condition.wait(timeout=remaining)
 
         if result[0] is None:
-            logger.warning(f"Timeout waiting for event: {event_type}")
+            self.emit(EventBusEvent.WARNING, {"warning": f"Timeout waiting for event: {event_type.name_str}"})
         return result[0]
 
     @system_run
@@ -140,4 +145,20 @@ class EventBus:
         Stops the event loop.
         """
         self._running = False
-        logger.info("EventBus stopped")
+        self.emit(GeneralEvent.INFO, {"message": "EventBus stopped"})
+
+    def get_last_event(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent|None = None) -> Optional[dict]:
+        """
+        Returns the last event data for a specific event type. If no event type is provided, returns the last event data for any event type.
+        Event is a tuple of (event_type, data).
+        """
+        with self._lock:
+            if event_type is None:
+                if not self._queue.empty():
+                    return self._queue.queue[-1][1]
+                return None
+
+            for event in reversed(self._queue.queue):
+                if event[0] == event_type:
+                    return event[1]
+            return None
