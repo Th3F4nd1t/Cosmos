@@ -16,8 +16,6 @@ class SwitchConfig:
     def parse_config(self, fms):
         """
         Syntax:
-        <$mode=[FIELD_DEVELOPMENT|MATCH_*|...]-"stuff to put"?"other stuff to put">
-
         <&station_1@team_number>
         <&station_1@team_name>
         <&station_1@ip>

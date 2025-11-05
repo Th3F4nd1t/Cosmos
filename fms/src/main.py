@@ -10,7 +10,7 @@ from core.eventbus.events import *
 from core.match_controller import MatchController
 from core.state_store import StateStore, States
 from core.plc_handler import PLCHandler
-from tools.terminal.shell_handler import ShellHandler
+from fms.src.tools.terminal.socket_server import ShellHandler
 from utils import ip
 from utils.config_loader import load_config
 from utils.user_attention import UserAttentionQueue

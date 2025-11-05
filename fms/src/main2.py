@@ -14,15 +14,22 @@ from core.station_manager import StationManager
 
 from utils.ip import ip, driverstation_ip, IP
 from utils.config_loader import load_config
-from utils.teams import TeamsManager, TeamData
+# from utils.teams import TeamsManager, TeamData
 from utils.user_attention import UserAttentionQueue # Possible future removal
 
-from tools.terminal.shell_handler import ShellHandler, ShellInstance
+from tools.terminal.socket_server import SocketServer
 
+from modes.mode_classes import *
+from modes.states import off
+from modes.transitions import *
+from modes.triggers import *
 
 
 class FMS:
     def __init__(self):
+        self.mode: State | Transition = off.Off()
+        self.triggers: dict[str, Trigger] = {}
+
         # Exception queue for storing errors in (e, tb)
         self.exception_queue = []
 
@@ -30,6 +37,7 @@ class FMS:
         self.event_bus = EventBus()
         threading.Thread(target=self.event_bus.run, daemon=True).start()
         self.emit(GeneralEvent.DEBUG, {"message": "Event bus initialized"})
+        self._attach_subscribers()
 
         # User attention queue for handling things that need user attention; can be accessed via terminals or via web gui
         self.user_attention = UserAttentionQueue()
@@ -40,12 +48,34 @@ class FMS:
         self.emit(GeneralEvent.DEBUG, {"message": "State store initialized"})
 
 
-    
+        # Simple thread-safe socket server to get/set two variables (A and B)
+        self.var_lock = threading.Lock()
+        self.turn_on = False
+        self.turn_off = False
+
+        self.socket_server = SocketServer(self)
+        threading.Thread(target=self.socket_server.run, daemon=True).start()
+
+        self.pin = None
+
+
+    def _notify_error(self, data: dict):
+        print(f"[ERROR] {data.get('message', '')}")
+    def _notify_warning(self, data: dict):
+        print(f"[WARNING] {data.get('message', '')}")
+    def _notify_info(self, data: dict):
+        print(f"[INFO] {data.get('message', '')}")
+    def _notify_debug(self, data: dict):
+        print(f"[DEBUG] {data.get('message', '')}")
+
     def _attach_subscribers(self):
         """
         Attach subscribers to the event bus.
         """
-        ...
+        self.event_bus.subscribe(GeneralEvent.ERROR, self._notify_error)
+        self.event_bus.subscribe(GeneralEvent.WARNING, self._notify_warning)
+        self.event_bus.subscribe(GeneralEvent.INFO, self._notify_info)
+        self.event_bus.subscribe(GeneralEvent.DEBUG, self._notify_debug)
 
 
     def emit(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, data: dict = None):
@@ -66,120 +96,59 @@ class FMS:
         # This is a placeholder for the remote shell handler.
         self.emit(GeneralEvent.DEBUG, {"message": "Remote shell handler initialized"})
 
-    def handle_null(self):
-        # Error and ask if proceed to OFF, BOOTING, or CRASHED
-        # Require field admin (FA) to confirm
-        # Broadcast
-        ...
+    def set_triggers(self, triggers: dict[str, Trigger]):
+        self.triggers = triggers
 
-    def handle_off(self):
-        # Wait for "power up" (should be in front-end as a button)
-        # Move to booting
-        ...
+    def getTrigger(self, name: str) -> Trigger | None:
+        return self.triggers.get(name)
+    
+    def _check_triggers(self):
+        for trigger in self.triggers.values():
+            trigger.check(self)
 
-    def handle_booting(self):
-        # Connect to PLCs
-        # Connect to switches and push primary config (all disallowed)
-        # Start PLC servers
-        # Connect to AP
-        # Test connections
-        # Move to modeless
-        ...
+    def _fms_main(self):
+        while True:
+            try:
+                # If in a state, attach triggers and run execute loop
+                if isinstance(self.mode, State):
+                    self.mode.attach_triggers(self)
+                    self.emit(GeneralEvent.DEBUG, {"message": f"Entered state: {self.mode.__class__.__name__}"})
+                    self.emit(GeneralEvent.DEBUG, {"message": f"Attached triggers: {list(self.triggers.keys())}"})
 
-    def handle_modeless(self):
-        # Red/blue lights depending
-        # Ask for where to move
-        # Require FM to confirm
-        # Displays should have year
-        ...
+                    while True:
+                        # Check triggers
+                        self._check_triggers()
+                    
+                        # Execute the current mode
+                        result = self.mode.execute(self)
 
-    def handle_field_test(self):
-        # API with all same light colors, indicators if e/a stops pressed, button for audio test, show statuses of switches/plcs and have options for testing
-        # Move to modeless
-        ...
+                        if result is not None:
+                            last_mode = self.mode
+                            self.mode = result
+                            break
 
-    def handle_field_disabled(self):
-        # Turn off lights
-        # Turn off PLC servers
-        # Push config to main switch to turn off POE for other switches, robot ap, and cut off DS nets
-        # Only can move to field enabling
-        ...
+                # If in a transition, run execute and move to new state
+                elif isinstance(self.mode, Transition):
+                    self.emit(GeneralEvent.DEBUG, {"message": f"Executing transition: {self.mode.__class__.__name__}"})
+                    result = self.mode.execute(last_mode, self)
+                    if result is not None:
+                        last_mode = self.mode
+                        self.mode = result
+                    else:
+                        raise RuntimeError("Transition did not return a new state")
 
-    def handle_field_enabling(self):
-        # Turn on lights
-        # Turn on PLC servers
-        # Push config to main switch to turn on POE for devices and enable ds nets
-        # Move to modeless
-        # Requires FM
-        ...
+            except Exception as e:
+                tb = traceback.format_exc()
+                self.exception_queue.append((e, tb))
+                self.emit(GeneralEvent.ERROR, {"message": f"Exception in FMS main loop: {e}, traceback: {tb}"})
+                print(f"Exception in FMS main loop: {e}, traceback: {tb}")
+                time.sleep(1)  # Prevent tight loop on exception
 
-    def handle_field_presentation(self):
-        # Turn lights to titans green
-        # Set numbers to 3767
-        # Also run field disabled code except for PLCs and side switch power
-        # Requires FM
-        ...
 
-    def handle_field_development(self):
-        # Allow full control, basically test but more control
-        # Requires FA
-        ...
+    def run(self):
+        self._fms_main()
 
-    def handle_development_configuring(self):
-        # Is pushing configs to switches and PLCs and AP
-        ...
 
-    def handle_development_main(self):
-        # 
-        ...
-
-    def handle_development_estop(self):
-        ...
-
-    def handle_development_greenlight(self):
-        ...
-
-    def handle_testing_configuring(self):
-        ...
-
-    def handle_testing_main(self):
-        ...
-
-    def handle_testing_estop(self):
-        ...
-
-    def handle_testing_greenlight(self):
-        ...
-
-    def handle_match_configuring(self):
-        ...
-
-    def handle_match_pre(self):
-        ...
-
-    def handle_match_auto(self):
-        ...
-        
-    def handle_match_transition(self):
-        ...
-
-    def handle_match_teleop(self):
-        ...
-
-    def handle_match_endgame(self):
-        ...
-
-    def handle_match_abort(self):
-        ...
-
-    def handle_match_post(self):
-        ...
-
-    def handle_match_greenlight(self):
-        ...
-
-    def handle_crashed(self):
-        ...
-
-    def handle_shutting_down(self):
-        ...
+if __name__ == "__main__":
+    fms = FMS()
+    fms.run()

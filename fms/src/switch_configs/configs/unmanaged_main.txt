@@ -1,0 +1,3 @@
+! Switch config file for unmanaged main switch, cisco, no vlans or anything, running dhcp server
+hostname CosmosMain
+no ip domain-lookup

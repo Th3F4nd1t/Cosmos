@@ -3,11 +3,10 @@ import time
 import threading
 
 from core.state_store import States
-from tools.terminal.decorators import user_run
 from core.eventbus.events import MatchEvent, GeneralEvent
 
 class MatchController:
-    @user_run
+    
     def __init__(self, fms, instance_id: int | None = None):
         self.fms = fms
         self.instance_id = instance_id
@@ -15,12 +14,12 @@ class MatchController:
         self.teams = self.fms.state_store.state["teams"].keys()
         self.progression = self.fms.state_store.state["match"]["progression"]
 
-    @user_run
+    
     def start_match(self, instance_id: int | None = None):
         threading.Thread(target=self._start_match).start()
         self.fms.emit(MatchEvent.STARTED, {"match_number": self.number, "teams": self.teams})
 
-    @user_run
+    
     def _start_match(self, instance_id: int | None = None):
         if self.fms.state_store.get_state() != States.MATCH_PRE:
             self.fms.emit(MatchEvent.ERROR, {"error": "Match cannot be started, not in MATCH_PRE state"})
@@ -65,7 +64,7 @@ class MatchController:
                 self.fms.emit(MatchEvent.ERROR, {"error": f"State mismatch: {self.fms.state_store.get_state()} != {pose[0]}"})
                 self._handle_state_mismatch(instance_id)
 
-    @user_run
+    
     def _handle_state_mismatch(self, instance_id: int | None = None):
         if self.fms.state_store.get_state() == States.MATCH_ABORT_OR_ESTOP:
             self.fms.emit(MatchEvent.ERROR, {"error": "Match aborted or field estop triggered"})

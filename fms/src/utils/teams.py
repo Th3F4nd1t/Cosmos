@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from tools.terminal.decorators import user_run, system_run
-from tools.terminal.shell_handler import MessageLevel
+from tools.terminal.socket_server import MessageLevel
 
 
 @dataclass
@@ -14,13 +13,13 @@ class TeamData:
     matches: list[int] = None
 
 class TeamsManager:
-    @system_run
+    
     def __init__(self, fms, teams_file: str = "./src/data/teams.json"):
         self.fms = fms
         self.teams_file = teams_file
         self.data = self._load_teams()
 
-    @user_run
+    
     def _load_teams(self, instance_id: int|None = None):
         self.fms.shell_handler.check_instance(instance_id)
 
@@ -35,7 +34,7 @@ class TeamsManager:
             self.fms.shell_handler.send_message(instance_id, f"Error decoding JSON from {self.teams_file}.", MessageLevel.ERROR)
             return {}
 
-    @user_run
+    
     def _save_teams(self, instance_id: int|None = None):
         self.fms.shell_handler.check_instance(instance_id)
         
@@ -46,7 +45,7 @@ class TeamsManager:
         except IOError as e:
             self.fms.shell_handler.send_message(instance_id, f"Error saving teams to {self.teams_file}: {e}", MessageLevel.ERROR)
 
-    @user_run
+    
     def get_team(self, team_number: int, instance_id: int|None = None) -> TeamData | None:
         """
         Returns the team data for the given team number.
@@ -67,7 +66,7 @@ class TeamsManager:
 
         return [TeamData(**team) for team in self.data.values()]
 
-    @user_run
+    
     def add_team(self, team_number: int, team_data: TeamData, instance_id: int|None = None):
         """
         Adds a new team or updates an existing team with the given data.
@@ -86,7 +85,7 @@ class TeamsManager:
         }
         self._save_teams(instance_id)
 
-    @user_run
+    
     def remove_team(self, team_number: int, instance_id: int|None = None):
         """
         Removes a team by its number.
@@ -99,7 +98,7 @@ class TeamsManager:
         else:
             self.fms.shell_handler.send_message(instance_id, f"Team {team_number} does not exist.", MessageLevel.ERROR)
 
-    @user_run
+    
     def update_team_stats(self, team_number: int, matches_played: int, wins: int, losses: int, ties: int, instance_id: int|None = None):
         """
         Updates the statistics for a team.

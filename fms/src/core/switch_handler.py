@@ -68,3 +68,5 @@ class SwitchHandler:
             self.fms.emit(GeneralEvent.INFO, {"message": f"Config pushed to switch {self.name}"})
         else:
             self.fms.emit(GeneralEvent.WARNING, {"message": f"No config to push to switch {self.name}"})
+
+        

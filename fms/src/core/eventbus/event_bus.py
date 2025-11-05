@@ -6,11 +6,9 @@ from queue import Queue, Empty
 import time
 from core.eventbus.events import GeneralEvent, EventBusEvent, MatchEvent, RobotEvent, PLCEvent, StateEvent, SwitchEvent, TeamEvent, UserAttentionEvent, TerminalEvent
 
-from tools.terminal.decorators import system_run
-
 
 class EventBus:
-    @system_run
+    
     def __init__(self):
         self._subscribers: Dict[str, List[Callable[[Any], None]]] = defaultdict(list)
         self._queue: Queue = Queue()
@@ -19,7 +17,7 @@ class EventBus:
         self._running = False
         self._thread = None
         
-    @system_run
+    
     def subscribe(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, callback: Callable[[Any], None]):
         """
         Register a callback for a specific event type.
@@ -56,7 +54,7 @@ class EventBus:
             else:
                 self.emit(EventBusEvent.WARNING, {"warning": f"No subscribers for event: {event_type.name_str}"})
 
-    @system_run
+    
     def emit(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, data: dict = None):
         """
         Emit an event to all subscribers.
@@ -72,14 +70,13 @@ class EventBus:
         with self._condition:
             self._condition.notify_all()
 
-    @system_run
     def run(self):
         """
         Starts the event loop in a dedicated thread.
         Call this once.
         """
         if self._running:
-            self.emit(EventBusEvent.WARNING, {"warning": "EventBus is already running"})
+            self.emit(GeneralEvent.WARNING, {"warning": "EventBus is already running"})
             return
 
         self._running = True
@@ -87,7 +84,7 @@ class EventBus:
         self._thread.start()
         self.emit(GeneralEvent.INFO, {"message": "EventBus started"})
 
-    @system_run
+    
     def _run_loop(self):
         while self._running:
             try:
@@ -99,16 +96,16 @@ class EventBus:
                 callbacks = self._subscribers.get(event_type, [])
 
             if not callbacks:
-                self.emit(EventBusEvent.WARNING, {"warning": f"No subscribers for event: {event_type.name_str}"})
+                self.emit(GeneralEvent.WARNING, {"warning": f"No subscribers for event: {event_type.name_str}"})
                 continue
 
             for callback in callbacks:
                 try:
                     callback(data)
                 except Exception as e:
-                    self.emit(EventBusEvent.ERROR, {"error": f"Error in callback for {event_type.name_str}: {e}"})
+                    self.emit(GeneralEvent.ERROR, {"error": f"Error in callback for {event_type.name_str}: {e}"})
 
-    @system_run
+    
     def wait_for(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent, check: Callable[[Any], bool] = lambda _: True, timeout: float = None) -> Optional[Any]:
         """
         Waits for a specific event to occur that passes the check function.
@@ -139,7 +136,7 @@ class EventBus:
             self.emit(EventBusEvent.WARNING, {"warning": f"Timeout waiting for event: {event_type.name_str}"})
         return result[0]
 
-    @system_run
+    
     def stop(self):
         """
         Stops the event loop.
