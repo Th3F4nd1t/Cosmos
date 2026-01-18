@@ -1,74 +1,74 @@
-class UserAttentionQueue:
-    def __init__(self):
-        self.queue = []
-        self.last_idn = 0
+# class UserAttentionQueue:
+#     def __init__(self):
+#         self.queue = []
+#         self.last_idn = 0
 
-    def force_add(self, item:str, options:list[str]|None = None) -> int:
-        """
-        Options should be a list of strings, the response will be the index of the selected option or if no options are provided, then a string response will be given.
-        """
-        self.last_idn += 1
-        self.queue.append([item, options, self.last_idn, None]) # Item, options, idn, response
-        self.queue.sort(key=lambda x: x[2], reverse=True)
-        return self.last_idn
+#     def force_add(self, item:str, options:list[str]|None = None) -> int:
+#         """
+#         Options should be a list of strings, the response will be the index of the selected option or if no options are provided, then a string response will be given.
+#         """
+#         self.last_idn += 1
+#         self.queue.append([item, options, self.last_idn, None]) # Item, options, idn, response
+#         self.queue.sort(key=lambda x: x[2], reverse=True)
+#         return self.last_idn
     
-    def add(self, item:str, options:list[str]|None = None) -> int:
-        """
-        Adds an item to the queue and returns the idn if the item is not already in the queue. Based on item text.
-        """
-        for i in self.queue:
-            if i[0] == item:
-                return i[2]
+#     def add(self, item:str, options:list[str]|None = None) -> int:
+#         """
+#         Adds an item to the queue and returns the idn if the item is not already in the queue. Based on item text.
+#         """
+#         for i in self.queue:
+#             if i[0] == item:
+#                 return i[2]
         
-        return self.force_add(item, options)
+#         return self.force_add(item, options)
     
-    def get(self, idn:int = None) -> tuple|None:
-        if idn is not None:
-            for item in self.queue:
-                if item[2] == idn:
-                    return item
+#     def get(self, idn:int = None) -> tuple|None:
+#         if idn is not None:
+#             for item in self.queue:
+#                 if item[2] == idn:
+#                     return item
         
-        for item in self.queue:
-            if item[3] is None:
-                return item
+#         for item in self.queue:
+#             if item[3] is None:
+#                 return item
             
-        return None
+#         return None
     
-    def get_all(self) -> list:
-        """
-        Returns all items in the queue.
-        """
-        return self.queue
+#     def get_all(self) -> list:
+#         """
+#         Returns all items in the queue.
+#         """
+#         return self.queue
 
-    def remove(self, idn:int) -> bool:
-        for item in self.queue:
-            if item[2] == idn:
-                self.queue.remove(item)
-                return True
-        return False
+#     def remove(self, idn:int) -> bool:
+#         for item in self.queue:
+#             if item[2] == idn:
+#                 self.queue.remove(item)
+#                 return True
+#         return False
 
-    def set_response(self, idn:int, response:int|str) -> bool:
-        for item in self.queue:
-            if item[2] == idn:
-                item[3] = response
-                return True
-        return False
+#     def set_response(self, idn:int, response:int|str) -> bool:
+#         for item in self.queue:
+#             if item[2] == idn:
+#                 item[3] = response
+#                 return True
+#         return False
     
 
-if __name__ == "__main__":
-    q = UserAttentionQueue()
+# if __name__ == "__main__":
+#     q = UserAttentionQueue()
 
-    # Add an item with options (response will be index of selected option)
-    idn = q.add("Approve deployment to production?", ["yes", "no"])
-    print("Added item id:", idn)
-    print("Item before response:", q.get(idn))
+#     # Add an item with options (response will be index of selected option)
+#     idn = q.add("Approve deployment to production?", ["yes", "no"])
+#     print("Added item id:", idn)
+#     print("Item before response:", q.get(idn))
 
-    # Set a response by option index (0 => "yes")
-    q.set_response(idn, 0)
-    print("Item after response:", q.get(idn))
+#     # Set a response by option index (0 => "yes")
+#     q.set_response(idn, 0)
+#     print("Item after response:", q.get(idn))
 
-    # Add an item without options (response will be a string)
-    id2 = q.add("Please provide rollback reason")
-    print("Added item id:", id2)
-    q.set_response(id2, "Outdated configuration detected")
-    print("All queue items:", q.get_all())
+#     # Add an item without options (response will be a string)
+#     id2 = q.add("Please provide rollback reason")
+#     print("Added item id:", id2)
+#     q.set_response(id2, "Outdated configuration detected")
+#     print("All queue items:", q.get_all())

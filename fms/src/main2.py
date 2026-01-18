@@ -6,8 +6,8 @@ import traceback
 # Internal imports
 from core.eventbus.event_bus import EventBus
 from core.eventbus.events import GeneralEvent, EventBusEvent, MatchEvent, RobotEvent, PLCEvent, StateEvent, SwitchEvent, TeamEvent, UserAttentionEvent, TerminalEvent
-from core.match_controller import MatchController
-from core.state_store import StateStore, States
+# from core.match_controller import MatchController
+from core.state_store import StateStore
 from core.plc_handler import PLCHandler
 from core.switch_handler import SwitchHandler
 from core.station_manager import StationManager
@@ -15,14 +15,12 @@ from core.station_manager import StationManager
 from utils.ip import ip, driverstation_ip, IP
 from utils.config_loader import load_config
 # from utils.teams import TeamsManager, TeamData
-from utils.user_attention import UserAttentionQueue # Possible future removal
+# from utils.user_attention import UserAttentionQueue # Possible future removal
 
 from tools.terminal.socket_server import SocketServer
 
-from modes.mode_classes import *
+from modes.mode_classes import State, Transition, Trigger
 from modes.states import off
-from modes.transitions import *
-from modes.triggers import *
 
 
 class FMS:
@@ -30,25 +28,17 @@ class FMS:
         self.mode: State | Transition = off.Off()
         self.triggers: dict[str, Trigger] = {}
 
-        # Exception queue for storing errors in (e, tb)
-        self.exception_queue = []
-
         # Event bus for handling events
         self.event_bus = EventBus()
         threading.Thread(target=self.event_bus.run, daemon=True).start()
         self.emit(GeneralEvent.DEBUG, {"message": "Event bus initialized"})
         self._attach_subscribers()
 
-        # User attention queue for handling things that need user attention; can be accessed via terminals or via web gui
-        self.user_attention = UserAttentionQueue()
-        self.emit(GeneralEvent.DEBUG, {"message": "User attention queue initialized"})
-
         # Create state store instance
         self.state_store = StateStore()
         self.emit(GeneralEvent.DEBUG, {"message": "State store initialized"})
 
 
-        # Simple thread-safe socket server to get/set two variables (A and B)
         self.var_lock = threading.Lock()
         self.turn_on = False
         self.turn_off = False
@@ -59,14 +49,10 @@ class FMS:
         self.pin = None
 
 
-    def _notify_error(self, data: dict):
-        print(f"[ERROR] {data.get('message', '')}")
-    def _notify_warning(self, data: dict):
-        print(f"[WARNING] {data.get('message', '')}")
-    def _notify_info(self, data: dict):
-        print(f"[INFO] {data.get('message', '')}")
-    def _notify_debug(self, data: dict):
-        print(f"[DEBUG] {data.get('message', '')}")
+    def _notify_error(self, data: dict): print(f"[ERROR] {data.get('message', '')}")
+    def _notify_warning(self, data: dict): print(f"[WARNING] {data.get('message', '')}")
+    def _notify_info(self, data: dict): print(f"[INFO] {data.get('message', '')}")
+    def _notify_debug(self, data: dict): print(f"[DEBUG] {data.get('message', '')}")
 
     def _attach_subscribers(self):
         """
@@ -107,7 +93,7 @@ class FMS:
             trigger.check(self)
 
     def _fms_main(self):
-        while True:
+        while self.state_store.is_running():
             try:
                 # If in a state, attach triggers and run execute loop
                 if isinstance(self.mode, State):

@@ -5,12 +5,6 @@ import threading
 from core.eventbus.events import GeneralEvent
 
 
-class ConnectionMode(Enum):
-    WAITING_FOR_COMMAND = 1
-    PROCESSING = 2
-    SENDING_RESPONSE = 3
-    SENDING_PROMPT = 4
-    WAITING_FOR_PROMPT_RESPONSE = 5
 
 class SocketServer:
     def __init__(self, fms, bind_addr:str="127.0.0.1", bind_port:int=9999):
@@ -116,6 +110,9 @@ class SocketServer:
 
                     else:
                         self.send_response(conn, "Invalid TURN subcommand")
+
+                elif cmd[0].lower() == "mode":
+                    self.send_response(conn, f"Current mode: {self.fms.mode.__class__.__name__}")
 
                 else:
                     self.send_response(conn, "Unknown command. Type HELP for a list of commands.")

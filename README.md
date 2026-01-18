@@ -61,7 +61,6 @@ discord: @thefandit
 - Red switch write
 - Blue switch write
 ### Field states
-- Null
 - Off
 - Booting
 - Modeless
@@ -104,8 +103,11 @@ Syntax:
     <&plc_blue@ip>
 
 ## Priorities
-- Estops
+- Network infrastructure
+- Robot comms
 - Enable/disable robots
+- PLC integration
+- Estops
 - Matches
 - Logging
 - Auto-scoring

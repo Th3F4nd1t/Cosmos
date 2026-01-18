@@ -159,3 +159,17 @@ class EventBus:
                 if event[0] == event_type:
                     return event[1]
             return None
+
+    def get_recent_events(self, event_type: GeneralEvent|EventBusEvent|MatchEvent|RobotEvent|PLCEvent|StateEvent|SwitchEvent|TeamEvent|UserAttentionEvent|TerminalEvent|None = None, count: int = 10) -> List[dict]:
+        """
+        Returns the most recent 'count' event data for a specific event type. If no event type is provided, returns the most recent 'count' event data for any event type.
+        Events are returned as a list of data dictionaries.
+        """
+        recent_events = []
+        with self._lock:
+            for event in reversed(self._queue.queue):
+                if event_type is None or event[0] == event_type:
+                    recent_events.append(event[1])
+                    if len(recent_events) >= count:
+                        break
+        return recent_events
